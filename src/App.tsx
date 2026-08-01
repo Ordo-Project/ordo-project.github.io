@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { OrdoMSection } from './components/OrdoMSection';
-import { MemorySimulator } from './components/MemorySimulator';
 import { OrdoGenSection } from './components/OrdoGenSection';
 import { ResearchDocs } from './components/ResearchDocs';
 import { AboutSection } from './components/AboutSection';
@@ -24,12 +23,11 @@ export const App: React.FC = () => {
       <Header activeTab={activeTab} setActiveTab={setActiveTab} />
       <main>
         <HeroSection
-          onExploreSimulator={() => scrollToSection('simulator')}
           onExploreOrdoM={() => scrollToSection('ordo-m')}
           onExploreOrdoGen={() => scrollToSection('ordogen')}
+          onExploreLiterature={() => scrollToSection('literature')}
         />
         <OrdoMSection />
-        <MemorySimulator />
         <OrdoGenSection />
         <ResearchDocs />
         <AboutSection />

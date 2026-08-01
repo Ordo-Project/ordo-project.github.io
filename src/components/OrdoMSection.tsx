@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
-import { MemoryStick, Cpu, BarChart3, Clock, Terminal, Copy, Check } from 'lucide-react';
+import React from 'react';
+import { Cpu, BarChart3, Clock, Lock } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 
 export const OrdoMSection: React.FC = () => {
-  const [copiedCmd, setCopiedCmd] = useState<string | null>(null);
-
-  const copyToClipboard = (code: string, id: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCmd(id);
-    setTimeout(() => setCopiedCmd(null), 2000);
-  };
-
   // Data for Collateral Damage Comparison
   const collateralData = [
     { metric: 'CounterFact Efficacy', 'Ordo-M': 100, 'LoRA (Equal Cap)': 100 },
@@ -28,199 +20,174 @@ export const OrdoMSection: React.FC = () => {
   ];
 
   return (
-    <section id="ordo-m" className="py-20 relative">
+    <section id="ordo-m" className="py-20 relative border-b border-[#1E2330]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-cyan-950/60 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-            <MemoryStick className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-lg bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-mono text-xs">
+            01
           </div>
           <div>
-            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase">ARCHITECTURAL BREAKTHROUGH</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
-              Ordo-M: External Rewritable Memory
+            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase">PAPER 01 • TECHNICAL SPECIFICATION</span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-sans">
+              Ordo-M: External Rewritable Memory Matrices
             </h2>
           </div>
         </div>
 
-        <p className="text-base sm:text-lg text-[#8A94A6] max-w-4xl font-light leading-relaxed mb-12">
-          Ordo-M attaches an external rewritable memory matrix directly to a <strong className="text-white">frozen LLM</strong> via forward hook at depth 0.66. Knowledge updates require zero parameter retuning of the base model. Updating documentation or code base specifications occurs in seconds, leaving all other stored knowledge <span className="text-cyan-300 font-semibold">100% pristine</span>.
+        <p className="text-sm sm:text-base text-[#8A94A6] max-w-4xl font-light leading-relaxed mb-10">
+          Ordo-M introduces a parameter-isolated memory architecture that attaches an external rewritable value table to a <strong className="text-white">frozen base LLM</strong> (Qwen3-8B baseline) via a single forward-hook at network layer depth <code className="text-cyan-300 font-mono">0.66</code>. Memory edits operate purely on value vectors, ensuring zero parameter modifications to the host LLM and zero collateral side-damage.
         </p>
 
-        {/* Mechanism Overview Card */}
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-[#1E2330] mb-12">
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center space-x-2">
-            <Cpu className="w-5 h-5 text-cyan-400" />
-            <span>How Ordo-M Forward Hook Works</span>
+        {/* Mathematical Formulation Card */}
+        <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-[#1E2330] mb-10 bg-[#0B0D13]">
+          <h3 className="text-sm font-mono font-bold text-white mb-4 flex items-center space-x-2">
+            <Cpu className="w-4 h-4 text-cyan-400" />
+            <span>Mathematical Formulation & Forward Hook Mechanics</span>
           </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-5 rounded-2xl bg-[#08090C] border border-[#1E2330]">
-              <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 font-mono text-xs flex items-center justify-center mb-3">01</div>
-              <h4 className="font-semibold text-white text-sm mb-1">Text Canonical Address</h4>
-              <p className="text-xs text-[#8A94A6]">
-                Address is derived via SHA-256 from explicit symbol names or file paths in the input text. Non-matching tokens return exactly zero lookup.
+
+          <div className="grid md:grid-cols-2 gap-6 text-xs font-mono">
+            <div className="p-4 rounded-xl bg-[#050608] border border-[#1E2330] space-y-3">
+              <div className="text-cyan-400 font-semibold">// 1. Entity Canonical Address Mapping</div>
+              <div className="text-slate-300">
+                {"a(s) = SHA-256(Canonical(s)) mod M"}
+              </div>
+              <p className="text-[#8A94A6] font-sans font-light leading-relaxed">
+                Input entity mentions s are deterministically mapped to address slot a. Non-matching or unindexed tokens yield zero lookup vector.
               </p>
             </div>
-            <div className="p-5 rounded-2xl bg-[#08090C] border border-[#1E2330]">
-              <div className="w-8 h-8 rounded-lg bg-violet-500/10 text-violet-400 font-mono text-xs flex items-center justify-center mb-3">02</div>
-              <h4 className="font-semibold text-white text-sm mb-1">Product-Key Matrix Lookup</h4>
-              <p className="text-xs text-[#8A94A6]">
-                Key table retrieves target value vectors from RAM or NVMe storage. Base weights remain untouched; table can be updated incrementally in waves.
-              </p>
-            </div>
-            <div className="p-5 rounded-2xl bg-[#08090C] border border-[#1E2330]">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 font-mono text-xs flex items-center justify-center mb-3">03</div>
-              <h4 className="font-semibold text-white text-sm mb-1">Zero Latency Injection</h4>
-              <p className="text-xs text-[#8A94A6]">
-                Forward hook injects memory vectors into network residual stream at layer depth 0.66. Disabling hook leaves base model byte-identical to original.
+
+            <div className="p-4 rounded-xl bg-[#050608] border border-[#1E2330] space-y-3">
+              <div className="text-violet-400 font-semibold">// 2. Residual Injection at Depth 0.66</div>
+              <div className="text-slate-300">
+                {"h_l <= h_l + W_out * v_a(s)"}
+              </div>
+              <p className="text-[#8A94A6] font-sans font-light leading-relaxed">
+                Linear projection matrix W_out injects memory vectors into layer depth 0.66. Initialized to zeros, leaving model byte-identical prior to edit ingestion.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Charts & Interactive Comparison Grid */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          {/* Chart 1: Ordo-M vs LoRA Collateral Damage */}
-          <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-[#1E2330]">
-            <div className="flex items-center justify-between mb-6">
+        {/* Experimental Charts */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-10">
+          {/* Chart 1 */}
+          <div className="glass-panel p-6 rounded-2xl border border-[#1E2330]">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-bold text-white flex items-center space-x-2">
-                  <BarChart3 className="w-5 h-5 text-cyan-400" />
-                  <span>Ordo-M vs LoRA Collateral Damage</span>
+                <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
+                  <BarChart3 className="w-4 h-4 text-cyan-400" />
+                  <span>Figure 1: Collateral Side-Damage Evaluation</span>
                 </h3>
-                <p className="text-xs text-[#8A94A6] mt-1">Measured on CounterFact & Qwen3-8B benchmark suite</p>
+                <p className="text-[11px] text-[#8A94A6]">CounterFact & Qwen3-8B benchmark comparison</p>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-cyan-950/80 text-cyan-300 text-[10px] font-mono border border-cyan-800/50">
-                0.0% Side Damage
+              <span className="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 text-[10px] font-mono border border-cyan-800">
+                0.0% Side-Damage
               </span>
             </div>
 
-            <div className="h-72 w-full">
+            <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={collateralData} margin={{ top: 20, right: 10, left: -20, bottom: 20 }}>
+                <BarChart data={collateralData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
-                  <XAxis dataKey="metric" stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 10 }} interval={0} />
-                  <YAxis stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 10 }} domain={[0, 100]} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0F1117', borderColor: '#2E364A', borderRadius: '8px' }} />
-                  <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                  <Bar dataKey="Ordo-M" fill="#06B6D4" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="LoRA (Equal Cap)" fill="#F43F5E" radius={[6, 6, 0, 0]} />
+                  <XAxis dataKey="metric" stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} interval={0} />
+                  <YAxis stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} domain={[0, 100]} />
+                  <Tooltip contentStyle={{ backgroundColor: '#0F1117', borderColor: '#2E364A', borderRadius: '8px', fontSize: '11px' }} />
+                  <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '8px' }} />
+                  <Bar dataKey="Ordo-M" fill="#06B6D4" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="LoRA (Equal Cap)" fill="#F43F5E" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-4 p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/20 text-xs text-cyan-200">
-              <strong>Key Finding:</strong> LoRA degrades surrounding knowledge by <span className="text-rose-400 font-mono font-bold">8.4%</span> on updates, whereas Ordo-M maintains <span className="text-emerald-400 font-mono font-bold">0.0% side-damage</span>.
+            <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
+              <strong className="text-white">Analysis:</strong> While equal-capacity LoRA adapters cause an <span className="text-rose-400 font-mono">8.4%</span> performance degradation on surrounding knowledge, Ordo-M maintains <span className="text-emerald-400 font-mono font-semibold">0.0% collateral side-damage</span> across all 50-fact update series.
             </div>
           </div>
 
-          {/* Chart 2: Wave Fine-Tuning Parity */}
-          <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-[#1E2330]">
-            <div className="flex items-center justify-between mb-6">
+          {/* Chart 2 */}
+          <div className="glass-panel p-6 rounded-2xl border border-[#1E2330]">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-bold text-white flex items-center space-x-2">
-                  <Clock className="w-5 h-5 text-violet-400" />
-                  <span>Incremental Wave Fine-Tuning Parity</span>
+                <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
+                  <Clock className="w-4 h-4 text-violet-400" />
+                  <span>Figure 2: Incremental Wave Fine-Tuning Parity</span>
                 </h3>
-                <p className="text-xs text-[#8A94A6] mt-1">Wave speed: 45s per update vs 75s+ full retrain</p>
+                <p className="text-[11px] text-[#8A94A6]">Wave time: 45s vs 75s+ full retrain</p>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-violet-950/80 text-violet-300 text-[10px] font-mono border border-violet-800/50">
-                96.2% Retrain Parity
+              <span className="px-2 py-0.5 rounded bg-violet-950 text-violet-300 text-[10px] font-mono border border-violet-800">
+                96.2% Retention
               </span>
             </div>
 
-            <div className="h-72 w-full">
+            <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={waveData} margin={{ top: 20, right: 10, left: -20, bottom: 20 }}>
+                <BarChart data={waveData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
-                  <XAxis dataKey="setup" stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 10 }} />
-                  <YAxis stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 10 }} domain={[0, 100]} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0F1117', borderColor: '#2E364A', borderRadius: '8px' }} />
-                  <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                  <Bar dataKey="waveAvg" name="Wave Avg Knowledge %" fill="#8B5CF6" radius={[6, 6, 0, 0]} />
+                  <XAxis dataKey="setup" stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} />
+                  <YAxis stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} domain={[0, 100]} />
+                  <Tooltip contentStyle={{ backgroundColor: '#0F1117', borderColor: '#2E364A', borderRadius: '8px', fontSize: '11px' }} />
+                  <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '8px' }} />
+                  <Bar dataKey="waveAvg" name="Wave Avg Knowledge %" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="mt-4 p-3 rounded-xl bg-violet-950/30 border border-violet-500/20 text-xs text-violet-200">
-              <strong>Wave Drift Metric:</strong> Early knowledge drift across 4 consecutive wave fine-tunes is <span className="text-emerald-400 font-mono font-bold">0.0 percentage points</span>.
+            <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
+              <strong className="text-white">Analysis:</strong> Calibrating initial output projections eliminates wave learning saturation, reaching <span className="text-violet-300 font-mono">96.2% parity</span> with full retraining while taking only 45s per wave.
             </div>
           </div>
         </div>
 
-        {/* Resource Costs & Quantization Table */}
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-[#1E2330] mb-12">
-          <h3 className="text-xl font-bold text-white mb-4">Hardware Footprint & Resource Metrics</h3>
-          <p className="text-xs text-[#8A94A6] mb-6">Tested on Qwen3-8B / NVIDIA L4 24GB & Apple M1 8GB</p>
+        {/* Resource Footprint Table */}
+        <div className="glass-panel p-6 rounded-2xl border border-[#1E2330] mb-10">
+          <h3 className="text-sm font-bold text-white mb-3 font-mono">Table 1: Hardware Resource & Quantization Footprint</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono">
               <thead>
                 <tr className="border-b border-[#1E2330] text-[#8A94A6]">
-                  <th className="pb-3 font-semibold">Parameter / Axis</th>
-                  <th className="pb-3 font-semibold">Measured Metric</th>
-                  <th className="pb-3 font-semibold">Operational Advantage</th>
+                  <th className="pb-2">Axis / Metric</th>
+                  <th className="pb-2">Measured Empirical Value</th>
+                  <th className="pb-2">Architectural Advantage</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E2330] text-[#F1F5F9]">
+              <tbody className="divide-y divide-[#1E2330] text-slate-300">
                 <tr>
-                  <td className="py-3 text-cyan-400 font-medium">Training Speed Scaling</td>
-                  <td className="py-3">Linear (Exponent 1.05); 0.076s per record / epoch</td>
-                  <td className="py-3 text-[#8A94A6]">Scales cleanly with large documentation sets</td>
+                  <td className="py-2.5 text-cyan-400">Training Speed Scaling</td>
+                  <td className="py-2.5">Linear exponent 1.05 (0.076s / record / epoch)</td>
+                  <td className="py-2.5 text-[#8A94A6]">Scales cleanly to large doc corpora</td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-cyan-400 font-medium">Training VRAM Footprint</td>
-                  <td className="py-3">0.0112 GB per 1M memory params (0.0034 GB inference)</td>
-                  <td className="py-3 text-[#8A94A6]">Allows 8B-27B models on consumer 12GB GPUs</td>
+                  <td className="py-2.5 text-cyan-400">VRAM Allocation</td>
+                  <td className="py-2.5">0.0112 GB / 1M memory params (0.0034 GB inference)</td>
+                  <td className="py-2.5 text-[#8A94A6]">Enables 27B LLMs on consumer GPUs</td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-cyan-400 font-medium">Inference Generation Speed</td>
-                  <td className="py-3">15.1 → 15.1 tokens/sec</td>
-                  <td className="py-3 text-[#8A94A6]">Zero latency penalty (Memory lookup is free)</td>
+                  <td className="py-2.5 text-cyan-400">Inference Throughput</td>
+                  <td className="py-2.5">15.1 → 15.1 tokens/sec</td>
+                  <td className="py-2.5 text-[#8A94A6]">Zero generation latency penalty</td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-cyan-400 font-medium">RAM / NVMe Disk Table Offloading</td>
-                  <td className="py-3">0.98× t/s baseline speed</td>
-                  <td className="py-3 text-[#8A94A6]">Memory size is no longer limited by GPU VRAM</td>
+                  <td className="py-2.5 text-cyan-400">RAM / NVMe Offloading</td>
+                  <td className="py-2.5">0.98x token generation speed</td>
+                  <td className="py-2.5 text-[#8A94A6]">Memory capacity independent of GPU VRAM</td>
                 </tr>
                 <tr>
-                  <td className="py-3 text-cyan-400 font-medium">Quantization Stability</td>
-                  <td className="py-3">Int8 preserves full edit series (Int4 breaks edit series)</td>
-                  <td className="py-3 text-[#8A94A6]">Int8 quantized memory table recommended</td>
+                  <td className="py-2.5 text-cyan-400">Quantization Stability</td>
+                  <td className="py-2.5">Int8 preserves full edit series (Int4 degrades)</td>
+                  <td className="py-2.5 text-[#8A94A6]">Int8 quantized tables recommended</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Command Line & Quickstart Snippets */}
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-[#1E2330]">
-          <div className="flex items-center space-x-2 mb-4">
-            <Terminal className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-lg font-bold text-white">Reproduce Ordo-M Locally</h3>
-          </div>
-          <p className="text-xs text-[#8A94A6] mb-6">Selftest runs in seconds on standard CPU without GPU or model downloads.</p>
-
-          <div className="space-y-4 font-mono text-xs">
-            <div className="bg-[#08090C] p-4 rounded-xl border border-[#1E2330] relative group">
-              <button
-                onClick={() => copyToClipboard('uv venv --python 3.12 .venv && .venv/bin/python -m ordo_m selftest', 'cmd1')}
-                className="absolute top-3 right-3 p-1.5 rounded-lg bg-[#0F1117] text-[#8A94A6] hover:text-white border border-[#1E2330]"
-              >
-                {copiedCmd === 'cmd1' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              </button>
-              <div className="text-[#8A94A6] mb-1"># 1. Environment Setup & Selftest</div>
-              <div className="text-cyan-300">uv venv --python 3.12 .venv</div>
-              <div className="text-cyan-300">.venv/bin/python -m ordo_m selftest</div>
-            </div>
-
-            <div className="bg-[#08090C] p-4 rounded-xl border border-[#1E2330] relative group">
-              <button
-                onClick={() => copyToClipboard('.venv/bin/python -m ordo_m ingest --config configs/ingest-library.yaml --src /path/to/lib', 'cmd2')}
-                className="absolute top-3 right-3 p-1.5 rounded-lg bg-[#0F1117] text-[#8A94A6] hover:text-white border border-[#1E2330]"
-              >
-                {copiedCmd === 'cmd2' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              </button>
-              <div className="text-[#8A94A6] mb-1"># 2. Documentation Diff Ingest & Memory Update</div>
-              <div className="text-cyan-300">.venv/bin/python -m ordo_m ingest --config configs/ingest-library.yaml --src /path/to/lib</div>
-            </div>
+        {/* Closed-Source Research Notice */}
+        <div className="p-5 rounded-2xl bg-[#0F1117] border border-[#1E2330] flex items-start space-x-3 text-xs">
+          <Lock className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-bold text-white font-mono">Closed-Source Research Access Notice</div>
+            <p className="text-[#8A94A6] font-light leading-relaxed">
+              Ordo-M source code and internal evaluation harnesses are currently closed-source. Academic researchers and institutional partners interested in reviewing empirical logs or requesting joint research access may contact lead researcher Russel Gavery via GitHub profile <a href="https://github.com/8hrsk" target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline font-mono">@8hrsk</a>.
+            </p>
           </div>
         </div>
       </div>
