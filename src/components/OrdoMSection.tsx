@@ -77,7 +77,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
         </div>
 
         {/* Figures 1–2 */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-8 mb-8 min-w-0">
           <FigureCard
             title={t.fig1Title}
             sub={t.fig1Sub}
@@ -87,6 +87,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
             analysis={t.fig1Analysis}
             icon={<BarChart3 className="w-4 h-4 text-cyan-400 shrink-0" />}
             chartHeight="h-56"
+            chartMinWidth="360px"
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={quality} margin={{ top: 8, right: 8, left: -22, bottom: 4 }}>
@@ -95,8 +96,8 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
                 <YAxis stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Legend wrapperStyle={LEGEND_STYLE} />
-                <Bar dataKey="ordo" name="Ordo-M" fill="#06B6D4" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="lora" name="LoRA" fill="#F43F5E" radius={[4, 4, 0, 0]} />
+                <Bar isAnimationActive={false} dataKey="ordo" name="Ordo-M" fill="#06B6D4" radius={[4, 4, 0, 0]} />
+                <Bar isAnimationActive={false} dataKey="lora" name="LoRA" fill="#F43F5E" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </FigureCard>
@@ -110,6 +111,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
             analysis={t.fig2Analysis}
             icon={<Clock className="w-4 h-4 text-violet-400 shrink-0" />}
             chartHeight="h-56"
+            chartMinWidth="400px"
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={waves} margin={{ top: 8, right: 8, left: -22, bottom: 4 }}>
@@ -123,7 +125,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
                   strokeDasharray="4 4"
                   label={{ value: '96.9', position: 'insideTopLeft', fill: '#F59E0B', fontSize: 10 }}
                 />
-                <Bar dataKey="wave" name="%" fill="#8B5CF6" radius={[4, 4, 0, 0]}>
+                <Bar isAnimationActive={false} dataKey="wave" name="%" fill="#8B5CF6" radius={[4, 4, 0, 0]}>
                   <LabelList dataKey="wave" position="top" fill="#8A94A6" fontSize={10} />
                 </Bar>
               </BarChart>
@@ -163,7 +165,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
         </div>
 
         {/* Figures 3–4 */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-8 mb-8 min-w-0">
           <FigureCard
             title={t.fig3Title}
             sub={t.fig3Sub}
@@ -173,6 +175,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
             analysis={t.fig3Analysis}
             icon={<Gauge className="w-4 h-4 text-emerald-400 shrink-0" />}
             chartHeight="h-56"
+            chartMinWidth="380px"
           >
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={gains} margin={{ top: 8, right: 4, left: -22, bottom: 4 }}>
@@ -182,9 +185,9 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
                 <YAxis yAxisId="p" orientation="right" stroke="#F43F5E" tick={{ ...AXIS, fill: '#F43F5E' }} domain={[0, 500]} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Legend wrapperStyle={LEGEND_STYLE} />
-                <Bar yAxisId="k" dataKey="wave0" name={lang === 'ru' ? 'волна 0' : 'wave 0'} fill="#06B6D4" radius={[4, 4, 0, 0]} />
-                <Bar yAxisId="k" dataKey="late" name={lang === 'ru' ? 'поздние волны' : 'later waves'} fill="#8B5CF6" radius={[4, 4, 0, 0]} />
-                <Line yAxisId="p" type="monotone" dataKey="ppl" name={lang === 'ru' ? 'ΔPPL упоминания, %' : 'ΔPPL on mentions, %'} stroke="#F43F5E" strokeWidth={2} dot={{ r: 3 }} />
+                <Bar isAnimationActive={false} yAxisId="k" dataKey="wave0" name={lang === 'ru' ? 'волна 0' : 'wave 0'} fill="#06B6D4" radius={[4, 4, 0, 0]} />
+                <Bar isAnimationActive={false} yAxisId="k" dataKey="late" name={lang === 'ru' ? 'поздние волны' : 'later waves'} fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+                <Line isAnimationActive={false} yAxisId="p" type="monotone" dataKey="ppl" name={lang === 'ru' ? 'ΔPPL упоминания, %' : 'ΔPPL on mentions, %'} stroke="#F43F5E" strokeWidth={2} dot={{ r: 3 }} />
               </ComposedChart>
             </ResponsiveContainer>
           </FigureCard>
@@ -197,25 +200,27 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
             analysisLabel={c.analysis}
             analysis={t.fig4Analysis}
             icon={<BarChart3 className="w-4 h-4 text-amber-400 shrink-0" />}
-            chartHeight="h-56"
+            chartHeight="h-72"
+            chartMinWidth="380px"
           >
+            {/* Horizontal: six arm names in either language do not fit as x-axis ticks. */}
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={arms} margin={{ top: 8, right: 8, left: -22, bottom: 4 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
-                <XAxis dataKey="arm" stroke="#8A94A6" tick={AXIS} interval={0} height={38} />
-                <YAxis stroke="#8A94A6" tick={AXIS} domain={[40, 95]} unit="%" />
+              <BarChart data={arms} layout="vertical" margin={{ top: 20, right: 34, left: 8, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" horizontal={false} />
+                <XAxis type="number" stroke="#8A94A6" tick={AXIS} domain={[40, 95]} unit="%" />
+                <YAxis type="category" dataKey="arm" stroke="#8A94A6" tick={AXIS} width={150} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <ReferenceLine
-                  y={MEMORY_THRESHOLD}
+                  x={MEMORY_THRESHOLD}
                   stroke="#10B981"
                   strokeDasharray="4 4"
-                  label={{ value: `${MEMORY_THRESHOLD}%`, position: 'insideTopLeft', fill: '#10B981', fontSize: 10 }}
+                  label={{ value: `${MEMORY_THRESHOLD}%`, position: 'top', fill: '#10B981', fontSize: 10 }}
                 />
-                <Bar dataKey="prefer" name="%" radius={[4, 4, 0, 0]}>
+                <Bar isAnimationActive={false} dataKey="prefer" name="%" radius={[0, 4, 4, 0]} barSize={16}>
                   {arms.map((a, i) => (
                     <Cell key={i} fill={armColor(a.kind)} />
                   ))}
-                  <LabelList dataKey="prefer" position="top" fill="#8A94A6" fontSize={10} />
+                  <LabelList dataKey="prefer" position="right" fill="#8A94A6" fontSize={10} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -223,7 +228,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
         </div>
 
         {/* Figure 5 — addressing as a retriever */}
-        <div className="mb-10">
+        <div className="mb-10 min-w-0">
           <FigureCard
             title={t.fig5Title}
             sub={t.fig5Sub}
@@ -233,6 +238,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
             analysis={t.fig5Analysis}
             icon={<Search className="w-4 h-4 text-rose-400 shrink-0" />}
             chartHeight="h-72"
+            chartMinWidth="420px"
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={retrievers} layout="vertical" margin={{ top: 8, right: 32, left: 8, bottom: 4 }}>
@@ -240,7 +246,7 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
                 <XAxis type="number" stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
                 <YAxis type="category" dataKey="name" stroke="#8A94A6" tick={AXIS} width={210} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
-                <Bar dataKey="recall" name="recall@1 %" radius={[0, 4, 4, 0]} barSize={16}>
+                <Bar isAnimationActive={false} dataKey="recall" name="recall@1 %" radius={[0, 4, 4, 0]} barSize={16}>
                   {retrievers.map((r, i) => (
                     <Cell key={i} fill={r.own ? '#06B6D4' : '#475569'} />
                   ))}

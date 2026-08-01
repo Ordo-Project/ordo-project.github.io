@@ -147,11 +147,12 @@ export const causalSeries = (lang: Language) => ({
 // ---------------------------------------------------------------------------
 // OrdoGen — evidence attention mass (log scale) and paired scores
 // ---------------------------------------------------------------------------
+// Short axis labels on purpose: the full arm names collide on a phone.
 const attentionRaw = [
-  { arm: L('64K plain', '64K обычный'), mass: 0.00898, hit: 65.8, score: 3 },
-  { arm: L('64K intervention', '64K вмешательство'), mass: 0.01493, hit: 61.5, score: 10 },
-  { arm: L('128K plain', '128K обычный'), mass: 0.000368, hit: 22.3, score: 0 },
-  { arm: L('128K intervention', '128K вмешательство'), mass: 0.000927, hit: 13.2, score: 0 },
+  { arm: L('64K plain', '64K баз.'), mass: 0.00898, hit: 65.8, score: 3 },
+  { arm: L('64K interv.', '64K вмеш.'), mass: 0.01493, hit: 61.5, score: 10 },
+  { arm: L('128K plain', '128K баз.'), mass: 0.000368, hit: 22.3, score: 0 },
+  { arm: L('128K interv.', '128K вмеш.'), mass: 0.000927, hit: 13.2, score: 0 },
 ];
 
 export const attentionData = (lang: Language) =>

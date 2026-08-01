@@ -54,21 +54,21 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           {/* Logo & Lab Tag */}
           <div
             onClick={() => handleNavClick('overview')}
-            className="flex items-center space-x-3 cursor-pointer shrink-0 group"
+            className="flex items-center space-x-3 cursor-pointer min-w-0 group"
           >
             <div className="w-9 h-9 rounded-lg bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 transition-all shadow-md">
               <Cpu className="w-4 h-4 text-cyan-400 group-hover:scale-105 transition-transform" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-0">
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-base tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors">
+                <span className="font-extrabold text-sm sm:text-base tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors truncate">
                   ORDO RESEARCH
                 </span>
                 <span className="hidden 2xl:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-cyan-400 border border-cyan-900/60">
                   LAB PREPRINT
                 </span>
               </div>
-              <span className="text-[10px] text-[#8A94A6] tracking-wide font-mono">
+              <span className="text-[10px] text-[#8A94A6] tracking-wide font-mono truncate">
                 ordo-project.com
               </span>
             </div>
@@ -122,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="xl:hidden flex items-center space-x-2">
+          <div className="xl:hidden flex items-center space-x-2 shrink-0">
             <button
               onClick={() => setLang(lang === 'en' ? 'ru' : 'en')}
               className="px-2 py-1 rounded bg-[#0F1117] text-cyan-400 font-mono text-xs border border-[#1E2330]"

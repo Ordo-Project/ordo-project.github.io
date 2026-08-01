@@ -82,7 +82,7 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
         </div>
 
         {/* Figures 1–2 */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-8 mb-8 min-w-0">
           <FigureCard
             title={t.fig1Title}
             sub={t.fig1Sub}
@@ -100,9 +100,9 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
                 <YAxis stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
                 <Tooltip contentStyle={TOOLTIP_STYLE} />
                 <Legend wrapperStyle={LEGEND_STYLE} />
-                <Line type="monotone" dataKey="exact" name={series.exact} stroke="#06B6D4" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="update" name={series.update} stroke="#8B5CF6" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="latent" name={series.latent} stroke="#F43F5E" strokeWidth={2} strokeDasharray="4 3" dot={{ r: 3 }} />
+                <Line isAnimationActive={false} type="monotone" dataKey="exact" name={series.exact} stroke="#06B6D4" strokeWidth={2} dot={{ r: 3 }} />
+                <Line isAnimationActive={false} type="monotone" dataKey="update" name={series.update} stroke="#8B5CF6" strokeWidth={2} dot={{ r: 3 }} />
+                <Line isAnimationActive={false} type="monotone" dataKey="latent" name={series.latent} stroke="#F43F5E" strokeWidth={2} strokeDasharray="4 3" dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </FigureCard>
@@ -116,6 +116,7 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
             analysis={t.fig2Analysis}
             icon={<BarChart3 className="w-4 h-4 text-rose-400 shrink-0" />}
             chartHeight="h-56"
+            chartMinWidth="420px"
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={cliffData} margin={{ top: 8, right: 12, left: -22, bottom: 4 }}>
@@ -125,8 +126,8 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
                 <YAxis stroke="#8A94A6" tick={AXIS} domain={[0, 10]} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Legend wrapperStyle={LEGEND_STYLE} />
-                <Bar dataKey="k16" name="16K" fill="#06B6D4" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="k32" name="32K" fill="#F43F5E" radius={[3, 3, 0, 0]} />
+                <Bar isAnimationActive={false} dataKey="k16" name="16K" fill="#06B6D4" radius={[3, 3, 0, 0]} />
+                <Bar isAnimationActive={false} dataKey="k32" name="32K" fill="#F43F5E" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </FigureCard>
@@ -134,7 +135,7 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
 
         {/* Position × task grid at 32K */}
         <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-[#1E2330] mb-8">
-          <div className="flex items-center justify-between gap-3 mb-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-4 min-w-0">
             <h3 className="text-sm font-bold text-white font-mono flex items-center space-x-2">
               <Grid3x3 className="w-4 h-4 text-violet-400" />
               <span>
@@ -181,7 +182,7 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
         </div>
 
         {/* Figures 3–4 */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-8 mb-8 min-w-0">
           <FigureCard
             title={t.fig3Title}
             sub={t.fig3Sub}
@@ -191,6 +192,7 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
             analysis={t.fig3Analysis}
             icon={<Crosshair className="w-4 h-4 text-emerald-400 shrink-0" />}
             chartHeight="h-72"
+            chartMinWidth="420px"
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={causal} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 4 }}>
@@ -199,8 +201,8 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
                 <YAxis type="category" dataKey="arm" stroke="#8A94A6" tick={AXIS} width={200} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Legend wrapperStyle={LEGEND_STYLE} />
-                <Bar dataKey="basePct" name={causalNames.base} fill="#475569" radius={[0, 3, 3, 0]} barSize={11} />
-                <Bar dataKey="condPct" name={causalNames.cond} fill="#10B981" radius={[0, 3, 3, 0]} barSize={11}>
+                <Bar isAnimationActive={false} dataKey="basePct" name={causalNames.base} fill="#475569" radius={[0, 3, 3, 0]} barSize={11} />
+                <Bar isAnimationActive={false} dataKey="condPct" name={causalNames.cond} fill="#10B981" radius={[0, 3, 3, 0]} barSize={11}>
                   {causal.map((d, i) => (
                     <Cell key={i} fill={d.kind === 'up' ? '#10B981' : d.kind === 'down' ? '#F43F5E' : '#8A94A6'} />
                   ))}
@@ -218,35 +220,42 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
             analysis={t.fig4Analysis}
             icon={<Radar className="w-4 h-4 text-rose-400 shrink-0" />}
             chartHeight="h-72"
+            chartMinWidth="440px"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart data={attention} margin={{ top: 8, right: 4, left: -14, bottom: 4 }}>
+              <ComposedChart data={attention} margin={{ top: 12, right: 4, left: 0, bottom: 4 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
                 <XAxis dataKey="arm" stroke="#8A94A6" tick={AXIS} interval={0} height={34} />
+                {/* Attention mass is the line, not a bar: a bar has no finite
+                    baseline on a log axis and collapses to zero height. */}
+                <YAxis yAxisId="s" domain={[0, 15]} stroke="#10B981" tick={{ ...AXIS, fill: '#10B981' }} width={28} />
                 <YAxis
                   yAxisId="m"
+                  orientation="right"
                   scale="log"
                   domain={[0.0002, 0.02]}
                   stroke="#06B6D4"
                   tick={{ ...AXIS, fill: '#06B6D4' }}
                   tickFormatter={(v: number) => v.toExponential(0)}
+                  width={44}
                 />
-                <YAxis yAxisId="s" orientation="right" domain={[0, 15]} stroke="#10B981" tick={{ ...AXIS, fill: '#10B981' }} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Legend wrapperStyle={LEGEND_STYLE} />
-                <Bar
-                  yAxisId="m"
-                  dataKey="mass"
-                  name={lang === 'ru' ? 'внимание к факту (лог)' : 'evidence attention (log)'}
-                  fill="#06B6D4"
-                  radius={[3, 3, 0, 0]}
-                />
-                <Line
+                <Bar isAnimationActive={false}
                   yAxisId="s"
-                  type="monotone"
                   dataKey="score"
                   name={lang === 'ru' ? 'верных из 15' : 'correct of 15'}
-                  stroke="#10B981"
+                  fill="#10B981"
+                  radius={[3, 3, 0, 0]}
+                >
+                  <LabelList dataKey="score" position="top" fill="#8A94A6" fontSize={10} />
+                </Bar>
+                <Line isAnimationActive={false}
+                  yAxisId="m"
+                  type="monotone"
+                  dataKey="mass"
+                  name={lang === 'ru' ? 'внимание к факту (лог)' : 'evidence attention (log)'}
+                  stroke="#06B6D4"
                   strokeWidth={2}
                   dot={{ r: 4 }}
                 />
@@ -256,7 +265,7 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
         </div>
 
         {/* Figure 5 — selector */}
-        <div className="mb-8">
+        <div className="mb-8 min-w-0">
           <FigureCard
             title={t.fig5Title}
             sub={t.fig5Sub}
@@ -266,6 +275,7 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
             analysis={t.fig5Analysis}
             icon={<Layers className="w-4 h-4 text-violet-400 shrink-0" />}
             chartHeight="h-80"
+            chartMinWidth="460px"
           >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={selector} layout="vertical" margin={{ top: 8, right: 32, left: 8, bottom: 4 }}>
@@ -274,10 +284,10 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
                 <YAxis type="category" dataKey="policy" stroke="#8A94A6" tick={AXIS} width={230} />
                 <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
                 <Legend wrapperStyle={LEGEND_STYLE} />
-                <Bar dataKey="r1" name="Recall@1" fill="#8B5CF6" radius={[0, 3, 3, 0]} barSize={11}>
+                <Bar isAnimationActive={false} dataKey="r1" name="Recall@1" fill="#8B5CF6" radius={[0, 3, 3, 0]} barSize={11}>
                   <LabelList dataKey="r1" position="right" fill="#8A94A6" fontSize={9} />
                 </Bar>
-                <Bar dataKey="r4" name="Recall@4" fill="#06B6D4" radius={[0, 3, 3, 0]} barSize={11} />
+                <Bar isAnimationActive={false} dataKey="r4" name="Recall@4" fill="#06B6D4" radius={[0, 3, 3, 0]} barSize={11} />
               </BarChart>
             </ResponsiveContainer>
           </FigureCard>

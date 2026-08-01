@@ -56,6 +56,9 @@ interface FigureCardProps {
   icon?: React.ReactNode;
   children: React.ReactNode;
   chartHeight?: string;
+  /** Minimum readable chart width. Below it the chart scrolls inside its own
+   *  container instead of squeezing category labels into each other. */
+  chartMinWidth?: string;
 }
 
 const TONE: Record<string, string> = {
@@ -76,24 +79,31 @@ export const FigureCard: React.FC<FigureCardProps> = ({
   icon,
   children,
   chartHeight = 'h-72',
+  chartMinWidth,
 }) => (
-  <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-[#1E2330] flex flex-col">
-    <div className="flex items-start justify-between gap-3 mb-4">
+  <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-[#1E2330] flex flex-col min-w-0">
+    {/* Badge sits under the title on narrow screens: as a nowrap sibling it used to
+        force the card wider than the viewport and widen the whole page. */}
+    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 mb-4 min-w-0">
       <div className="min-w-0">
-        <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
+        <h3 className="text-sm font-bold text-white flex items-start gap-2 font-mono">
           {icon}
-          <span className="truncate-none">{title}</span>
+          <span className="break-words min-w-0">{title}</span>
         </h3>
-        <p className="text-[11px] text-[#8A94A6] mt-0.5">{sub}</p>
+        <p className="text-[11px] text-[#8A94A6] mt-0.5 break-words">{sub}</p>
       </div>
       <span
-        className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-mono border whitespace-nowrap ${TONE[badgeTone]}`}
+        className={`self-start sm:shrink-0 px-2 py-0.5 rounded text-[10px] font-mono border break-words ${TONE[badgeTone]}`}
       >
         {badge}
       </span>
     </div>
 
-    <div className={`${chartHeight} w-full`}>{children}</div>
+    <div className="w-full min-w-0 overflow-x-auto">
+      <div className={`${chartHeight} w-full`} style={chartMinWidth ? { minWidth: chartMinWidth } : undefined}>
+        {children}
+      </div>
+    </div>
 
     <div className="mt-4 p-3.5 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] leading-relaxed text-[#8A94A6] font-sans">
       <span className="font-mono text-[10px] uppercase tracking-wider text-cyan-500/80 mr-1.5">

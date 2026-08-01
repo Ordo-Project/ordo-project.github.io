@@ -77,6 +77,17 @@
 }
 
 /* Recharts Customization */
+/* Grid/flex children default to min-width:auto; without this a chart can refuse to
+   shrink and push the whole page wider than the viewport on small screens. */
+.recharts-responsive-container {
+  min-width: 0 !important;
+}
+
+.recharts-wrapper,
+.recharts-surface {
+  max-width: 100%;
+}
+
 .recharts-default-tooltip {
   background-color: #0F1117 !important;
   border-color: #2E364A !important;
