@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe } from 'lucide-react';
+import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert } from 'lucide-react';
 import { Language, translations } from '../translations';
 
 interface HeaderProps {
@@ -26,6 +26,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
     { id: 'overview', label: t.abstract, icon: Zap },
     { id: 'ordo-m', label: t.ordoM, icon: MemoryStick },
     { id: 'ordogen', label: t.ordoGen, icon: Cpu },
+    { id: 'timeline', label: t.timeline, icon: GitCommitVertical },
+    { id: 'limits', label: t.limits, icon: ShieldAlert },
     { id: 'literature', label: t.literature, icon: BookOpen },
     { id: 'about', label: t.about, icon: User },
   ];
@@ -62,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
                 <span className="font-extrabold text-base tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors">
                   ORDO RESEARCH
                 </span>
-                <span className="hidden xl:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-cyan-400 border border-cyan-900/60">
+                <span className="hidden 2xl:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-cyan-400 border border-cyan-900/60">
                   LAB PREPRINT
                 </span>
               </div>
@@ -73,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           </div>
 
           {/* Desktop Navigation Menu */}
-          <nav className="hidden lg:flex items-center space-x-1 glass-panel px-2.5 py-1 rounded-xl border border-[#1E2330]">
+          <nav className="hidden xl:flex items-center space-x-1 glass-panel px-2.5 py-1 rounded-xl border border-[#1E2330]">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -95,7 +97,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           </nav>
 
           {/* Right Action Controls: Language Toggle & GitHub */}
-          <div className="hidden sm:flex items-center space-x-2.5 shrink-0">
+          <div className="hidden xl:flex items-center space-x-2.5 shrink-0">
             {/* Language Switcher Button */}
             <button
               onClick={() => setLang(lang === 'en' ? 'ru' : 'en')}
@@ -120,7 +122,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden flex items-center space-x-2">
+          <div className="xl:hidden flex items-center space-x-2">
             <button
               onClick={() => setLang(lang === 'en' ? 'ru' : 'en')}
               className="px-2 py-1 rounded bg-[#0F1117] text-cyan-400 font-mono text-xs border border-[#1E2330]"
@@ -139,7 +141,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-[#1E2330] bg-[#08090C]/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-2 font-mono text-xs">
+        <div className="xl:hidden border-b border-[#1E2330] bg-[#08090C]/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-2 font-mono text-xs">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;

@@ -34,7 +34,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
               <h3 className="text-xl font-bold text-white font-sans">Russel Gavery</h3>
               <p className="text-xs font-mono text-cyan-400 mt-0.5">Gavrilov Ruslan (@8hrsk)</p>
               <p className="text-xs text-[#8A94A6] mt-2 font-light">
-                Lead AI Researcher & Founder, Ordo Project
+                {t.role}
               </p>
 
               <div className="mt-4 flex items-center justify-center md:justify-start space-x-3">
@@ -66,10 +66,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                 {t.bio}
               </p>
 
-              <div className="grid sm:grid-cols-2 gap-4 pt-2">
+              <div className="grid sm:grid-cols-3 gap-4 pt-2">
                 <div className="p-4 rounded-xl bg-[#08090C] border border-[#1E2330]">
                   <div className="text-xs font-bold text-white mb-1 flex items-center space-x-2 font-mono">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                     <span>{t.card1Title}</span>
                   </div>
                   <p className="text-xs text-[#8A94A6] font-light leading-relaxed">
@@ -79,12 +79,29 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
 
                 <div className="p-4 rounded-xl bg-[#08090C] border border-[#1E2330]">
                   <div className="text-xs font-bold text-white mb-1 flex items-center space-x-2 font-mono">
-                    <Cpu className="w-4 h-4 text-violet-400" />
+                    <Cpu className="w-4 h-4 text-violet-400 shrink-0" />
                     <span>{t.card2Title}</span>
                   </div>
                   <p className="text-xs text-[#8A94A6] font-light leading-relaxed">
                     {t.card2Text}
                   </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-[#08090C] border border-[#1E2330]">
+                  <div className="text-xs font-bold text-white mb-1 flex items-center space-x-2 font-mono">
+                    <Terminal className="w-4 h-4 text-cyan-400 shrink-0" />
+                    <span>{t.card3Title}</span>
+                  </div>
+                  <p className="text-xs text-[#8A94A6] font-light leading-relaxed">
+                    {t.card3Text}
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <div className="p-4 rounded-xl bg-[#08090C] border border-[#1E2330]">
+                  <div className="text-xs font-bold text-white mb-1 font-mono">{t.contactTitle}</div>
+                  <p className="text-xs text-[#8A94A6] font-light leading-relaxed">{t.contactText}</p>
                 </div>
               </div>
             </div>

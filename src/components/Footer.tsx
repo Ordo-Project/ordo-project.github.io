@@ -38,8 +38,10 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
             <span className="text-[#1E2330]">|</span>
             <div className="flex items-center space-x-1 text-slate-400 text-[11px]">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>GitHub Pages Static Host</span>
+              <span>{t.host}</span>
             </div>
+            <span className="text-[#1E2330] hidden sm:inline">|</span>
+            <span className="text-slate-400 text-[11px]">{t.cutoff}</span>
           </div>
         </div>
 

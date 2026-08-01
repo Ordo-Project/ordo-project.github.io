@@ -1,7 +1,31 @@
 import React from 'react';
-import { Cpu, BarChart3, Clock, Lock } from 'lucide-react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
+import { Cpu, BarChart3, Clock, Lock, Gauge, Search, Target } from 'lucide-react';
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  ComposedChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  Legend,
+  ReferenceLine,
+  Cell,
+  LabelList,
+} from 'recharts';
 import { Language, translations } from '../translations';
+import {
+  editQualityData,
+  sideDamageData,
+  waveData,
+  gainData,
+  domainArmData,
+  retrieverData,
+  MEMORY_THRESHOLD,
+} from '../data';
+import { SectionHeader, FigureCard, AXIS, TOOLTIP_STYLE, LEGEND_STYLE } from './ui';
 
 interface OrdoMSectionProps {
   lang: Language;
@@ -9,44 +33,28 @@ interface OrdoMSectionProps {
 
 export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
   const t = translations[lang].ordoM;
+  const c = translations[lang].common;
 
-  // Data for Collateral Damage Comparison
-  const collateralData = [
-    { metric: 'CounterFact Efficacy', 'Ordo-M': 100, 'LoRA (Equal Cap)': 100 },
-    { metric: 'Paraphrase Generalization', 'Ordo-M': 97.2, 'LoRA (Equal Cap)': 68.5 },
-    { metric: 'Collateral Damage (Lower is better)', 'Ordo-M': 0.0, 'LoRA (Equal Cap)': 8.4 },
-    { metric: '50 Fact Update Retention', 'Ordo-M': 88.0, 'LoRA (Equal Cap)': 41.2 },
-  ];
+  const quality = editQualityData(lang);
+  const damage = sideDamageData(lang);
+  const waves = waveData(lang);
+  const gains = gainData(lang);
+  const arms = domainArmData(lang);
+  const retrievers = retrieverData(lang);
 
-  // Data for Wave Training Parity
-  const waveData = [
-    { setup: 'Old baseline (6 epochs)', waveAvg: 29.5, drift: 0.0, label: '29.5% Wave Avg' },
-    { setup: 'Calib 500 -> Freeze (6 ep)', waveAvg: 81.1, drift: 0.5, label: '81.1% Wave Avg' },
-    { setup: 'Calib 500 -> Freeze (18 ep)', waveAvg: 96.2, drift: 0.0, label: '96.2% Wave Avg (Parity)' },
-    { setup: 'Full Retrain (Control)', waveAvg: 96.9, drift: 0.0, label: '96.9% Full Retrain' },
-  ];
+  const armColor = (kind: string) =>
+    kind === 'base' ? '#F43F5E' : kind === 'ceiling' ? '#F59E0B' : '#06B6D4';
 
   return (
     <section id="ordo-m" className="py-20 relative border-b border-[#1E2330]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-9 h-9 rounded-lg bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-mono text-xs">
-            01
-          </div>
-          <div>
-            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase">{t.paperTag}</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-sans">
-              {t.title}
-            </h2>
-          </div>
-        </div>
+        <SectionHeader index="01" tag={t.paperTag} title={t.title} accent="cyan" />
 
         <p className="text-sm sm:text-base text-[#8A94A6] max-w-4xl font-light leading-relaxed mb-10">
           {t.description}
         </p>
 
-        {/* Mathematical Formulation Card */}
+        {/* Construction */}
         <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-[#1E2330] mb-10 bg-[#0B0D13]">
           <h3 className="text-sm font-mono font-bold text-white mb-4 flex items-center space-x-2">
             <Cpu className="w-4 h-4 text-cyan-400" />
@@ -56,112 +64,211 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
           <div className="grid md:grid-cols-2 gap-6 text-xs font-mono">
             <div className="p-4 rounded-xl bg-[#050608] border border-[#1E2330] space-y-3">
               <div className="text-cyan-400 font-semibold">{t.math1Title}</div>
-              <div className="text-slate-300">
-                {t.math1Formula}
-              </div>
-              <p className="text-[#8A94A6] font-sans font-light leading-relaxed">
-                {t.math1Desc}
-              </p>
+              <div className="text-slate-200 text-[13px]">{t.math1Formula}</div>
+              <p className="text-[#8A94A6] font-sans font-light leading-relaxed">{t.math1Desc}</p>
             </div>
 
             <div className="p-4 rounded-xl bg-[#050608] border border-[#1E2330] space-y-3">
               <div className="text-violet-400 font-semibold">{t.math2Title}</div>
-              <div className="text-slate-300">
-                {t.math2Formula}
-              </div>
-              <p className="text-[#8A94A6] font-sans font-light leading-relaxed">
-                {t.math2Desc}
-              </p>
+              <div className="text-slate-200 text-[13px]">{t.math2Formula}</div>
+              <p className="text-[#8A94A6] font-sans font-light leading-relaxed">{t.math2Desc}</p>
             </div>
           </div>
         </div>
 
-        {/* Experimental Charts */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-10">
-          {/* Chart 1 */}
-          <div className="glass-panel p-6 rounded-2xl border border-[#1E2330]">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
-                  <BarChart3 className="w-4 h-4 text-cyan-400" />
-                  <span>{t.fig1Title}</span>
-                </h3>
-                <p className="text-[11px] text-[#8A94A6]">{t.fig1Sub}</p>
-              </div>
-              <span className="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 text-[10px] font-mono border border-cyan-800">
-                {t.fig1Badge}
-              </span>
-            </div>
+        {/* Figures 1–2 */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          <FigureCard
+            title={t.fig1Title}
+            sub={t.fig1Sub}
+            badge={t.fig1Badge}
+            badgeTone="cyan"
+            analysisLabel={c.analysis}
+            analysis={t.fig1Analysis}
+            icon={<BarChart3 className="w-4 h-4 text-cyan-400 shrink-0" />}
+            chartHeight="h-56"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={quality} margin={{ top: 8, right: 8, left: -22, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="metric" stroke="#8A94A6" tick={AXIS} interval={0} height={34} />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Bar dataKey="ordo" name="Ordo-M" fill="#06B6D4" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="lora" name="LoRA" fill="#F43F5E" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
 
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={collateralData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
-                  <XAxis dataKey="metric" stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} interval={0} />
-                  <YAxis stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} domain={[0, 100]} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0F1117', borderColor: '#2E364A', borderRadius: '8px', fontSize: '11px' }} />
-                  <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '8px' }} />
-                  <Bar dataKey="Ordo-M" fill="#06B6D4" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="LoRA (Equal Cap)" fill="#F43F5E" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
-              {t.fig1Analysis}
-            </div>
+          <FigureCard
+            title={t.fig2Title}
+            sub={t.fig2Sub}
+            badge={t.fig2Badge}
+            badgeTone="violet"
+            analysisLabel={c.analysis}
+            analysis={t.fig2Analysis}
+            icon={<Clock className="w-4 h-4 text-violet-400 shrink-0" />}
+            chartHeight="h-56"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={waves} margin={{ top: 8, right: 8, left: -22, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="setup" stroke="#8A94A6" tick={AXIS} interval={0} height={34} />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <ReferenceLine
+                  y={96.9}
+                  stroke="#F59E0B"
+                  strokeDasharray="4 4"
+                  label={{ value: '96.9', position: 'insideTopLeft', fill: '#F59E0B', fontSize: 10 }}
+                />
+                <Bar dataKey="wave" name="%" fill="#8B5CF6" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="wave" position="top" fill="#8A94A6" fontSize={10} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+        </div>
+
+        {/* Side damage strip — the single number the project turns on */}
+        <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-[#1E2330] mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-bold text-white font-mono flex items-center space-x-2">
+              <Target className="w-4 h-4 text-rose-400" />
+              <span>{t.fig1Badge}</span>
+            </h3>
+            <span className="text-[10px] font-mono text-[#8A94A6]">{c.lower}</span>
           </div>
-
-          {/* Chart 2 */}
-          <div className="glass-panel p-6 rounded-2xl border border-[#1E2330]">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
-                  <Clock className="w-4 h-4 text-violet-400" />
-                  <span>{t.fig2Title}</span>
-                </h3>
-                <p className="text-[11px] text-[#8A94A6]">{t.fig2Sub}</p>
+          <div className="space-y-3">
+            {damage.map((d) => (
+              <div key={d.arm} className="flex items-center gap-3">
+                <div className="w-28 sm:w-52 lg:w-64 shrink-0 text-[10px] sm:text-[11px] font-mono text-[#8A94A6] text-right leading-tight">
+                  {d.arm}
+                </div>
+                <div className="flex-1 h-6 rounded bg-[#050608] border border-[#1E2330] overflow-hidden">
+                  <div
+                    className={`h-full ${d.damage === 0 ? 'bg-emerald-500/70' : 'bg-rose-500/70'}`}
+                    style={{ width: `${Math.max(d.damage / 10, 0.012) * 100}%` }}
+                  />
+                </div>
+                <div
+                  className={`w-14 shrink-0 text-[11px] font-mono ${d.damage === 0 ? 'text-emerald-400' : 'text-rose-400'}`}
+                >
+                  {d.damage.toFixed(1)}%
+                </div>
               </div>
-              <span className="px-2 py-0.5 rounded bg-violet-950 text-violet-300 text-[10px] font-mono border border-violet-800">
-                {t.fig2Badge}
-              </span>
-            </div>
-
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={waveData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
-                  <XAxis dataKey="setup" stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} />
-                  <YAxis stroke="#8A94A6" tick={{ fill: '#8A94A6', fontSize: 9 }} domain={[0, 100]} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0F1117', borderColor: '#2E364A', borderRadius: '8px', fontSize: '11px' }} />
-                  <Legend wrapperStyle={{ fontSize: '10px', paddingTop: '8px' }} />
-                  <Bar dataKey="waveAvg" name="Wave Avg Knowledge %" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
-              {t.fig2Analysis}
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Resource Footprint Table */}
+        {/* Figures 3–4 */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+          <FigureCard
+            title={t.fig3Title}
+            sub={t.fig3Sub}
+            badge={t.fig3Badge}
+            badgeTone="emerald"
+            analysisLabel={c.analysis}
+            analysis={t.fig3Analysis}
+            icon={<Gauge className="w-4 h-4 text-emerald-400 shrink-0" />}
+            chartHeight="h-56"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={gains} margin={{ top: 8, right: 4, left: -22, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="setup" stroke="#8A94A6" tick={AXIS} interval={0} height={34} />
+                <YAxis yAxisId="k" stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
+                <YAxis yAxisId="p" orientation="right" stroke="#F43F5E" tick={{ ...AXIS, fill: '#F43F5E' }} domain={[0, 500]} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Bar yAxisId="k" dataKey="wave0" name={lang === 'ru' ? 'волна 0' : 'wave 0'} fill="#06B6D4" radius={[4, 4, 0, 0]} />
+                <Bar yAxisId="k" dataKey="late" name={lang === 'ru' ? 'поздние волны' : 'later waves'} fill="#8B5CF6" radius={[4, 4, 0, 0]} />
+                <Line yAxisId="p" type="monotone" dataKey="ppl" name={lang === 'ru' ? 'ΔPPL упоминания, %' : 'ΔPPL on mentions, %'} stroke="#F43F5E" strokeWidth={2} dot={{ r: 3 }} />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          <FigureCard
+            title={t.fig4Title}
+            sub={t.fig4Sub}
+            badge={t.fig4Badge}
+            badgeTone="amber"
+            analysisLabel={c.analysis}
+            analysis={t.fig4Analysis}
+            icon={<BarChart3 className="w-4 h-4 text-amber-400 shrink-0" />}
+            chartHeight="h-56"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={arms} margin={{ top: 8, right: 8, left: -22, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="arm" stroke="#8A94A6" tick={AXIS} interval={0} height={38} />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[40, 95]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <ReferenceLine
+                  y={MEMORY_THRESHOLD}
+                  stroke="#10B981"
+                  strokeDasharray="4 4"
+                  label={{ value: `${MEMORY_THRESHOLD}%`, position: 'insideTopLeft', fill: '#10B981', fontSize: 10 }}
+                />
+                <Bar dataKey="prefer" name="%" radius={[4, 4, 0, 0]}>
+                  {arms.map((a, i) => (
+                    <Cell key={i} fill={armColor(a.kind)} />
+                  ))}
+                  <LabelList dataKey="prefer" position="top" fill="#8A94A6" fontSize={10} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+        </div>
+
+        {/* Figure 5 — addressing as a retriever */}
+        <div className="mb-10">
+          <FigureCard
+            title={t.fig5Title}
+            sub={t.fig5Sub}
+            badge={t.fig5Badge}
+            badgeTone="rose"
+            analysisLabel={c.analysis}
+            analysis={t.fig5Analysis}
+            icon={<Search className="w-4 h-4 text-rose-400 shrink-0" />}
+            chartHeight="h-72"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={retrievers} layout="vertical" margin={{ top: 8, right: 32, left: 8, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" horizontal={false} />
+                <XAxis type="number" stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
+                <YAxis type="category" dataKey="name" stroke="#8A94A6" tick={AXIS} width={210} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Bar dataKey="recall" name="recall@1 %" radius={[0, 4, 4, 0]} barSize={16}>
+                  {retrievers.map((r, i) => (
+                    <Cell key={i} fill={r.own ? '#06B6D4' : '#475569'} />
+                  ))}
+                  <LabelList dataKey="recall" position="right" fill="#8A94A6" fontSize={10} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+        </div>
+
+        {/* Resource table */}
         <div className="glass-panel p-6 rounded-2xl border border-[#1E2330] mb-10">
-          <h3 className="text-sm font-bold text-white mb-3 font-mono">{t.tableTitle}</h3>
+          <h3 className="text-sm font-bold text-white mb-4 font-mono">{t.tableTitle}</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
+            <table className="w-full text-left text-xs font-mono min-w-[640px]">
               <thead>
                 <tr className="border-b border-[#1E2330] text-[#8A94A6]">
-                  <th className="pb-2">{t.colAxis}</th>
-                  <th className="pb-2">{t.colValue}</th>
-                  <th className="pb-2">{t.colAdv}</th>
+                  <th className="pb-2 pr-4 font-medium">{t.colAxis}</th>
+                  <th className="pb-2 pr-4 font-medium">{t.colValue}</th>
+                  <th className="pb-2 font-medium">{t.colAdv}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1E2330] text-slate-300">
                 {t.rows.map((row, idx) => (
                   <tr key={idx}>
-                    <td className="py-2.5 text-cyan-400">{row.axis}</td>
-                    <td className="py-2.5">{row.val}</td>
-                    <td className="py-2.5 text-[#8A94A6]">{row.adv}</td>
+                    <td className="py-2.5 pr-4 text-cyan-400 align-top">{row.axis}</td>
+                    <td className="py-2.5 pr-4 align-top">{row.val}</td>
+                    <td className="py-2.5 text-[#8A94A6] align-top">{row.adv}</td>
                   </tr>
                 ))}
               </tbody>
@@ -169,14 +276,11 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
           </div>
         </div>
 
-        {/* Closed-Source Research Notice */}
         <div className="p-5 rounded-2xl bg-[#0F1117] border border-[#1E2330] flex items-start space-x-3 text-xs">
           <Lock className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
           <div className="space-y-1">
             <div className="font-bold text-white font-mono">{t.noticeTitle}</div>
-            <p className="text-[#8A94A6] font-light leading-relaxed">
-              {t.noticeText}
-            </p>
+            <p className="text-[#8A94A6] font-light leading-relaxed">{t.noticeText}</p>
           </div>
         </div>
       </div>

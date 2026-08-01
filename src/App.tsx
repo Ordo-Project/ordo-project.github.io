@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { OrdoMSection } from './components/OrdoMSection';
 import { OrdoGenSection } from './components/OrdoGenSection';
+import { TimelineSection } from './components/TimelineSection';
+import { LimitsSection } from './components/LimitsSection';
 import { ResearchDocs } from './components/ResearchDocs';
 import { AboutSection } from './components/AboutSection';
 import { Footer } from './components/Footer';
 import { Language } from './translations';
 
+const initialLang = (): Language => {
+  if (typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('ru')) {
+    return 'ru';
+  }
+  return 'en';
+};
+
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [lang, setLang] = useState<Language>('en');
+  const [lang, setLang] = useState<Language>(initialLang);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const scrollToSection = (id: string) => {
     setActiveTab(id);
@@ -32,6 +45,8 @@ export const App: React.FC = () => {
         />
         <OrdoMSection lang={lang} />
         <OrdoGenSection lang={lang} />
+        <TimelineSection lang={lang} />
+        <LimitsSection lang={lang} />
         <ResearchDocs lang={lang} />
         <AboutSection lang={lang} />
       </main>
