@@ -1,52 +1,58 @@
 import React, { useState } from 'react';
 import { BookOpen, Search } from 'lucide-react';
+import { Language, translations } from '../translations';
 
-export const ResearchDocs: React.FC = () => {
+interface ResearchDocsProps {
+  lang: Language;
+}
+
+export const ResearchDocs: React.FC<ResearchDocsProps> = ({ lang }) => {
   const [selectedDoc, setSelectedDoc] = useState('ordo-m-spec');
   const [searchQuery, setSearchQuery] = useState('');
+  const t = translations[lang].literature;
 
   const docsList = [
     {
       id: 'ordo-m-spec',
-      title: 'Ordo-M: Parameter-Isolated Rewritable Memory Matrix for Frozen LLMs',
+      title: lang === 'ru' ? 'Ordo-M: Архитектура внешней памяти и механика хуков' : 'Ordo-M: Parameter-Isolated Rewritable Memory Matrix for Frozen LLMs',
       category: 'Ordo-M Paper',
       date: '2026-08-01',
-      summary: 'Mathematical formulation of Product-Key forward hooks at depth 0.66, SHA-256 entity canonical addressing, and residual stream injection.',
+      summary: lang === 'ru' ? 'Математическая формулировка Product-Key хука на глубине 0.66, адресация по каноническому имени и инжекция в остаточный поток.' : 'Mathematical formulation of Product-Key forward hooks at depth 0.66, SHA-256 entity canonical addressing, and residual stream injection.',
     },
     {
       id: 'lora-degradation',
-      title: 'Comparative Evaluation of LoRA Side-Damage vs. Isolated Value Tables',
+      title: lang === 'ru' ? 'Сравнительная оценка LoRA и изолированных таблиц памяти' : 'Comparative Evaluation of LoRA Side-Damage vs. Isolated Value Tables',
       category: 'Ordo-M Evaluation',
       date: '2026-07-31',
-      summary: 'Empirical benchmark proving LoRA adapters suffer 8.4% collateral side-damage on neighbor facts, while Ordo-M preserves 0.0% side-damage.',
+      summary: lang === 'ru' ? 'Эмпирический замер: LoRA повреждает 8.4% соседнего знания при точечной правке, тогда как Ordo-M сохраняет 0.0% побочного ущерба.' : 'Empirical benchmark proving LoRA adapters suffer 8.4% collateral side-damage on neighbor facts, while Ordo-M preserves 0.0% side-damage.',
     },
     {
       id: 'context-rot-128k',
-      title: 'OrdoGen: Empirical Measurement of Nominal vs. Functional Context Rot',
+      title: lang === 'ru' ? 'OrdoGen: Измерение номинального и функционального контекста 128K' : 'OrdoGen: Empirical Measurement of Nominal vs. Functional Context Rot',
       category: 'OrdoGen Paper',
       date: '2026-08-01',
-      summary: 'Analysis of the 128K context rot cliff, 24x evidence attention mass collapse, and exact 64K query relay replication on RTX A6000 clusters.',
+      summary: lang === 'ru' ? 'Анализ обрыва контекста на 128K, падения внимания в 24 раза и репликации точного 64K retrieval с оверхедом 4.2%.' : 'Analysis of the 128K context rot cliff, 24x evidence attention mass collapse, and exact 64K query relay replication on RTX A6000 clusters.',
     },
     {
       id: 'layer24-bottleneck',
-      title: 'Causal Localization & Gold Evidence Steering in Layer 24',
+      title: lang === 'ru' ? 'Локализация узкого места в слое 24 и стиринг внимания' : 'Causal Localization & Gold Evidence Steering in Layer 24',
       category: 'OrdoGen Intervention',
       date: '2026-08-01',
-      summary: 'Per-head causal ablation (p=0.0078) and gold evidence head steering results (40/75 -> 49/75, p=0.0039) for trainable GQA block selection.',
+      summary: lang === 'ru' ? 'Поголовая абляция (p=0.0078) и результаты оракульного стиринга (40/75 -> 49/75, p=0.0039) для селектора GQA.' : 'Per-head causal ablation (p=0.0078) and gold evidence head steering results (40/75 -> 49/75, p=0.0039) for trainable GQA block selection.',
     },
     {
       id: 'wave-finetuning',
-      title: 'Incremental Wave Fine-Tuning Parity via Output Projection Calibration',
+      title: lang === 'ru' ? 'Паритет дообучения волнами через калибровку проекции' : 'Incremental Wave Fine-Tuning Parity via Output Projection Calibration',
       category: 'Ordo-M Optimization',
       date: '2026-08-01',
-      summary: 'Solving wave learning saturation by calibrating initial output projections, reaching 96.2% retention parity with full retraining.',
+      summary: lang === 'ru' ? 'Решение проблемы насыщения волн калибровкой начальной проекции: 96.2% паритета с полным переобучением за 45 сек.' : 'Solving wave learning saturation by calibrating initial output projections, reaching 96.2% retention parity with full retraining.',
     },
     {
       id: 'hardware-benchmark',
-      title: 'Hardware Resource Footprint: Int8 Quantization & NVMe/RAM Offloading',
+      title: lang === 'ru' ? 'Затраты ресурсов: квантование Int8 и вынос в NVMe/RAM' : 'Hardware Resource Footprint: Int8 Quantization & NVMe/RAM Offloading',
       category: 'Hardware Benchmark',
       date: '2026-08-01',
-      summary: 'Measuring VRAM consumption (0.0034 GB/1M params), 0ms inference overhead, and Int8 quantization stability across edit series.',
+      summary: lang === 'ru' ? 'Замер VRAM (0.0034 ГБ / 1M параметров), нулевого оверхеда инференса и устойчивости Int8 квантования.' : 'Measuring VRAM consumption (0.0034 GB/1M params), 0ms inference overhead, and Int8 quantization stability across edit series.',
     },
   ];
 
@@ -66,15 +72,15 @@ export const ResearchDocs: React.FC = () => {
             <BookOpen className="w-4 h-4" />
           </div>
           <div>
-            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase">TECHNICAL LITERATURE HUB</span>
+            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase">{t.tag}</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-sans">
-              Peer-Reviewed Preprints & Experimental Papers
+              {t.title}
             </h2>
           </div>
         </div>
 
         <p className="text-sm text-[#8A94A6] max-w-3xl mb-8 font-light leading-relaxed">
-          Access research preprints, mathematical formulations, hardware benchmarks, and empirical ablation protocols across Ordo-M and OrdoGen research projects.
+          {t.subtitle}
         </p>
 
         {/* Search Input */}
@@ -82,7 +88,7 @@ export const ResearchDocs: React.FC = () => {
           <Search className="w-4 h-4 text-[#8A94A6] absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Filter research preprints & experimental logs..."
+            placeholder={t.placeholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl bg-[#0F1117] border border-[#1E2330] text-xs font-mono text-white focus:outline-none focus:border-cyan-500/50"

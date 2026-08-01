@@ -6,9 +6,11 @@ import { OrdoGenSection } from './components/OrdoGenSection';
 import { ResearchDocs } from './components/ResearchDocs';
 import { AboutSection } from './components/AboutSection';
 import { Footer } from './components/Footer';
+import { Language } from './translations';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [lang, setLang] = useState<Language>('en');
 
   const scrollToSection = (id: string) => {
     setActiveTab(id);
@@ -20,19 +22,20 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#08090C] text-[#F1F5F9] font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
-      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} lang={lang} setLang={setLang} />
       <main>
         <HeroSection
           onExploreOrdoM={() => scrollToSection('ordo-m')}
           onExploreOrdoGen={() => scrollToSection('ordogen')}
           onExploreLiterature={() => scrollToSection('literature')}
+          lang={lang}
         />
-        <OrdoMSection />
-        <OrdoGenSection />
-        <ResearchDocs />
-        <AboutSection />
+        <OrdoMSection lang={lang} />
+        <OrdoGenSection lang={lang} />
+        <ResearchDocs lang={lang} />
+        <AboutSection lang={lang} />
       </main>
-      <Footer />
+      <Footer lang={lang} />
     </div>
   );
 };

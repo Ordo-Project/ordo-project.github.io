@@ -1,7 +1,14 @@
 import React from 'react';
 import { Cpu, Github, ShieldCheck } from 'lucide-react';
+import { Language, translations } from '../translations';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  lang: Language;
+}
+
+export const Footer: React.FC<FooterProps> = ({ lang }) => {
+  const t = translations[lang].footer;
+
   return (
     <footer className="border-t border-[#1E2330] bg-[#050608] py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,7 +20,7 @@ export const Footer: React.FC = () => {
             </div>
             <div>
               <div className="font-bold text-white text-sm font-mono tracking-tight">ORDO RESEARCH</div>
-              <div className="text-[11px] text-[#8A94A6] font-mono">ordo-project.com • Academic Preprints & Research</div>
+              <div className="text-[11px] text-[#8A94A6] font-mono">{t.tagline}</div>
             </div>
           </div>
 
@@ -37,7 +44,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="mt-8 pt-6 border-t border-[#1E2330]/50 text-center text-[11px] text-[#475569] font-mono">
-          © 2026 Ordo Research Project by Russel Gavery (Gavrilov Ruslan, @8hrsk). Hosted on GitHub Pages.
+          {t.copyright}
         </div>
       </div>
     </footer>

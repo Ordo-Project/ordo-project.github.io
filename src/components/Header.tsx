@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, FileText } from 'lucide-react';
+import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe } from 'lucide-react';
+import { Language, translations } from '../translations';
 
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  lang: Language;
+  setLang: (lang: Language) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
+export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, setLang }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const t = translations[lang].nav;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,12 +23,11 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
   }, []);
 
   const navItems = [
-    { id: 'overview', label: 'Abstract', icon: Zap },
-    { id: 'ordo-m', label: 'Ordo-M Memory', icon: MemoryStick },
-    { id: 'ordogen', label: 'OrdoGen Context', icon: Cpu },
-    { id: 'literature', label: 'Technical Literature', icon: FileText },
-    { id: 'docs', label: 'Experimental Papers', icon: BookOpen },
-    { id: 'about', label: 'Researcher', icon: User },
+    { id: 'overview', label: t.abstract, icon: Zap },
+    { id: 'ordo-m', label: t.ordoM, icon: MemoryStick },
+    { id: 'ordogen', label: t.ordoGen, icon: Cpu },
+    { id: 'literature', label: t.literature, icon: BookOpen },
+    { id: 'about', label: t.about, icon: User },
   ];
 
   const handleNavClick = (id: string) => {
@@ -40,37 +43,37 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#08090C]/90 backdrop-blur-md border-b border-[#1E2330] py-3 shadow-2xl'
+          ? 'bg-[#08090C]/95 backdrop-blur-md border-b border-[#1E2330] py-3 shadow-2xl'
           : 'bg-transparent py-5'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          {/* Logo / Lab Header */}
+        <div className="flex items-center justify-between gap-4">
+          {/* Logo & Lab Tag */}
           <div
             onClick={() => handleNavClick('overview')}
-            className="flex items-center space-x-3 cursor-pointer group"
+            className="flex items-center space-x-3 cursor-pointer shrink-0 group"
           >
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-cyan-950 to-slate-900 border border-cyan-500/40 flex items-center justify-center group-hover:border-cyan-400/80 transition-all">
+            <div className="w-9 h-9 rounded-lg bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 transition-all shadow-md">
               <Cpu className="w-4 h-4 text-cyan-400 group-hover:scale-105 transition-transform" />
             </div>
-            <div>
+            <div className="flex flex-col">
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-lg tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors">
+                <span className="font-extrabold text-base tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors">
                   ORDO RESEARCH
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 text-slate-300 border border-slate-700">
+                <span className="hidden xl:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-cyan-400 border border-cyan-900/60">
                   LAB PREPRINT
                 </span>
               </div>
-              <span className="text-[11px] text-[#8A94A6] tracking-wide block font-mono">
+              <span className="text-[10px] text-[#8A94A6] tracking-wide font-mono">
                 ordo-project.com
               </span>
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1 glass-panel px-3 py-1.5 rounded-xl border border-[#1E2330]">
+          {/* Desktop Navigation Menu */}
+          <nav className="hidden lg:flex items-center space-x-1 glass-panel px-2.5 py-1 rounded-xl border border-[#1E2330]">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -78,9 +81,9 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all duration-200 ${
+                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-all duration-200 ${
                     isActive
-                      ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                      ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow-sm'
                       : 'text-[#8A94A6] hover:text-white hover:bg-white/5'
                   }`}
                 >
@@ -91,27 +94,44 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             })}
           </nav>
 
-          {/* GitHub Profile */}
-          <div className="hidden sm:flex items-center space-x-3">
+          {/* Right Action Controls: Language Toggle & GitHub */}
+          <div className="hidden sm:flex items-center space-x-2.5 shrink-0">
+            {/* Language Switcher Button */}
+            <button
+              onClick={() => setLang(lang === 'en' ? 'ru' : 'en')}
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-cyan-400 font-mono text-xs border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+              title="Switch Language / Сменить язык"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>{lang.toUpperCase()}</span>
+            </button>
+
+            {/* GitHub Profile Button */}
             <a
               href="https://github.com/8hrsk"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
             >
-              <Github className="w-4 h-4 text-cyan-400" />
+              <Github className="w-3.5 h-3.5 text-cyan-400" />
               <span>@8hrsk</span>
               <ExternalLink className="w-3 h-3 opacity-60" />
             </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center space-x-2">
+            <button
+              onClick={() => setLang(lang === 'en' ? 'ru' : 'en')}
+              className="px-2 py-1 rounded bg-[#0F1117] text-cyan-400 font-mono text-xs border border-[#1E2330]"
+            >
+              {lang.toUpperCase()}
+            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg bg-[#0F1117] border border-[#1E2330] text-[#8A94A6] hover:text-white"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -119,7 +139,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-[#1E2330] bg-[#08090C]/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-2 font-mono text-xs">
+        <div className="lg:hidden border-b border-[#1E2330] bg-[#08090C]/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-2 font-mono text-xs">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;

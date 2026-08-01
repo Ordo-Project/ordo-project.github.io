@@ -1,8 +1,15 @@
 import React from 'react';
 import { AlertTriangle, Layers, Crosshair, BarChart3, TrendingUp } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, Legend, BarChart, Bar } from 'recharts';
+import { Language, translations } from '../translations';
 
-export const OrdoGenSection: React.FC = () => {
+interface OrdoGenSectionProps {
+  lang: Language;
+}
+
+export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
+  const t = translations[lang].ordoGen;
+
   // Attention mass decay across window lengths (64K vs 128K cliff)
   const contextRotData = [
     { position: '0K - 16K', evidenceAttention: 100, retrievalAccuracy: 98, label: 'High Attention' },
@@ -29,15 +36,15 @@ export const OrdoGenSection: React.FC = () => {
             02
           </div>
           <div>
-            <span className="text-xs font-mono text-violet-400 tracking-wider uppercase">PAPER 02 • CONTEXT ROT & COMPLEXITY</span>
+            <span className="text-xs font-mono text-violet-400 tracking-wider uppercase">{t.paperTag}</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-sans">
-              OrdoGen: Long-Context & Attention Bottleneck Research
+              {t.title}
             </h2>
           </div>
         </div>
 
         <p className="text-sm sm:text-base text-[#8A94A6] max-w-4xl font-light leading-relaxed mb-10">
-          Commercial LLMs advertise nominal context windows up to 1M - 2M tokens, but empirical context rot evaluations reveal that <strong className="text-white">nominal window length does not equal functional retrieval</strong>. At 128K tokens, evidence attention mass collapses by ~24x, yielding 0/15 retrieval accuracy. OrdoGen addresses quadratic O(N^2) complexity through causal head localization (Layer 24) and trainable GQA block selectors.
+          {t.description}
         </p>
 
         {/* Technical Highlights */}
@@ -46,9 +53,9 @@ export const OrdoGenSection: React.FC = () => {
             <div className="w-7 h-7 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center mb-3">
               <AlertTriangle className="w-4 h-4" />
             </div>
-            <h3 className="font-bold text-white text-xs font-mono mb-1">1. The 128K Context Cliff</h3>
+            <h3 className="font-bold text-white text-xs font-mono mb-1">{t.cards[0].title}</h3>
             <p className="text-xs text-[#8A94A6] leading-relaxed font-light">
-              Plain 128K context runs experience a 24x drop in evidence attention mass relative to matched 64K runs, yielding 0/15 retrieval accuracy.
+              {t.cards[0].text}
             </p>
           </div>
 
@@ -56,9 +63,9 @@ export const OrdoGenSection: React.FC = () => {
             <div className="w-7 h-7 rounded-lg bg-violet-500/10 text-violet-400 flex items-center justify-center mb-3">
               <Layers className="w-4 h-4" />
             </div>
-            <h3 className="font-bold text-white text-xs font-mono mb-1">2. Layer 24 Retrieval Bottleneck</h3>
+            <h3 className="font-bold text-white text-xs font-mono mb-1">{t.cards[1].title}</h3>
             <p className="text-xs text-[#8A94A6] leading-relaxed font-light">
-              Per-head causal ablation isolates Layer 24 as the key retrieval bottleneck. Selected head ablation significantly reduces accuracy (32/45 -&gt; 24/45, p=0.0078).
+              {t.cards[1].text}
             </p>
           </div>
 
@@ -66,9 +73,9 @@ export const OrdoGenSection: React.FC = () => {
             <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-3">
               <Crosshair className="w-4 h-4" />
             </div>
-            <h3 className="font-bold text-white text-xs font-mono mb-1">3. Gold Evidence Head Steering</h3>
+            <h3 className="font-bold text-white text-xs font-mono mb-1">{t.cards[2].title}</h3>
             <p className="text-xs text-[#8A94A6] leading-relaxed font-light">
-              Oracle evidence head steering on post-freeze cases boosts retrieval from 40/75 to 49/75 (p=0.0039) with zero regressions across control sets.
+              {t.cards[2].text}
             </p>
           </div>
         </div>
@@ -81,12 +88,12 @@ export const OrdoGenSection: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
                   <TrendingUp className="w-4 h-4 text-rose-400" />
-                  <span>Figure 3: Attention Mass Decay Across Context Windows</span>
+                  <span>{t.fig3Title}</span>
                 </h3>
-                <p className="text-[11px] text-[#8A94A6]">Empirical measurement on RTX A6000 clusters</p>
+                <p className="text-[11px] text-[#8A94A6]">{t.fig3Sub}</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-rose-950 text-rose-300 text-[10px] font-mono border border-rose-800">
-                24x Drop at 128K
+                {t.fig3Badge}
               </span>
             </div>
 
@@ -104,7 +111,7 @@ export const OrdoGenSection: React.FC = () => {
               </ResponsiveContainer>
             </div>
             <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
-              <strong className="text-white">Analysis:</strong> Answer-free semantic query relays achieve exact retrieval replication at 64K window length with only <span className="text-emerald-400 font-mono">4.2% latency overhead</span> (p=0.0156).
+              {t.fig3Analysis}
             </div>
           </div>
 
@@ -114,12 +121,12 @@ export const OrdoGenSection: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
                   <BarChart3 className="w-4 h-4 text-violet-400" />
-                  <span>Figure 4: Causal Gold Evidence Steering Results</span>
+                  <span>{t.fig4Title}</span>
                 </h3>
-                <p className="text-[11px] text-[#8A94A6]">75 post-freeze case interventions</p>
+                <p className="text-[11px] text-[#8A94A6]">{t.fig4Sub}</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 text-[10px] font-mono border border-emerald-800">
-                +9 Gains (p=0.0039)
+                {t.fig4Badge}
               </span>
             </div>
 
@@ -136,7 +143,7 @@ export const OrdoGenSection: React.FC = () => {
               </ResponsiveContainer>
             </div>
             <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
-              <strong className="text-white">Analysis:</strong> Steering causal attention heads rescues 9 post-freeze cases (40/75 -&gt; 49/75) with zero regressions across control sets.
+              {t.fig4Analysis}
             </div>
           </div>
         </div>

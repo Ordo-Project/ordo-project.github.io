@@ -1,8 +1,15 @@
 import React from 'react';
 import { Cpu, BarChart3, Clock, Lock } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
+import { Language, translations } from '../translations';
 
-export const OrdoMSection: React.FC = () => {
+interface OrdoMSectionProps {
+  lang: Language;
+}
+
+export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
+  const t = translations[lang].ordoM;
+
   // Data for Collateral Damage Comparison
   const collateralData = [
     { metric: 'CounterFact Efficacy', 'Ordo-M': 100, 'LoRA (Equal Cap)': 100 },
@@ -28,42 +35,42 @@ export const OrdoMSection: React.FC = () => {
             01
           </div>
           <div>
-            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase">PAPER 01 • TECHNICAL SPECIFICATION</span>
+            <span className="text-xs font-mono text-cyan-400 tracking-wider uppercase">{t.paperTag}</span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-sans">
-              Ordo-M: External Rewritable Memory Matrices
+              {t.title}
             </h2>
           </div>
         </div>
 
         <p className="text-sm sm:text-base text-[#8A94A6] max-w-4xl font-light leading-relaxed mb-10">
-          Ordo-M introduces a parameter-isolated memory architecture that attaches an external rewritable value table to a <strong className="text-white">frozen base LLM</strong> (Qwen3-8B baseline) via a single forward-hook at network layer depth <code className="text-cyan-300 font-mono">0.66</code>. Memory edits operate purely on value vectors, ensuring zero parameter modifications to the host LLM and zero collateral side-damage.
+          {t.description}
         </p>
 
         {/* Mathematical Formulation Card */}
         <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-[#1E2330] mb-10 bg-[#0B0D13]">
           <h3 className="text-sm font-mono font-bold text-white mb-4 flex items-center space-x-2">
             <Cpu className="w-4 h-4 text-cyan-400" />
-            <span>Mathematical Formulation & Forward Hook Mechanics</span>
+            <span>{t.mathTitle}</span>
           </h3>
 
           <div className="grid md:grid-cols-2 gap-6 text-xs font-mono">
             <div className="p-4 rounded-xl bg-[#050608] border border-[#1E2330] space-y-3">
-              <div className="text-cyan-400 font-semibold">// 1. Entity Canonical Address Mapping</div>
+              <div className="text-cyan-400 font-semibold">{t.math1Title}</div>
               <div className="text-slate-300">
-                {"a(s) = SHA-256(Canonical(s)) mod M"}
+                {t.math1Formula}
               </div>
               <p className="text-[#8A94A6] font-sans font-light leading-relaxed">
-                Input entity mentions s are deterministically mapped to address slot a. Non-matching or unindexed tokens yield zero lookup vector.
+                {t.math1Desc}
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-[#050608] border border-[#1E2330] space-y-3">
-              <div className="text-violet-400 font-semibold">// 2. Residual Injection at Depth 0.66</div>
+              <div className="text-violet-400 font-semibold">{t.math2Title}</div>
               <div className="text-slate-300">
-                {"h_l <= h_l + W_out * v_a(s)"}
+                {t.math2Formula}
               </div>
               <p className="text-[#8A94A6] font-sans font-light leading-relaxed">
-                Linear projection matrix W_out injects memory vectors into layer depth 0.66. Initialized to zeros, leaving model byte-identical prior to edit ingestion.
+                {t.math2Desc}
               </p>
             </div>
           </div>
@@ -77,12 +84,12 @@ export const OrdoMSection: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
                   <BarChart3 className="w-4 h-4 text-cyan-400" />
-                  <span>Figure 1: Collateral Side-Damage Evaluation</span>
+                  <span>{t.fig1Title}</span>
                 </h3>
-                <p className="text-[11px] text-[#8A94A6]">CounterFact & Qwen3-8B benchmark comparison</p>
+                <p className="text-[11px] text-[#8A94A6]">{t.fig1Sub}</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 text-[10px] font-mono border border-cyan-800">
-                0.0% Side-Damage
+                {t.fig1Badge}
               </span>
             </div>
 
@@ -100,7 +107,7 @@ export const OrdoMSection: React.FC = () => {
               </ResponsiveContainer>
             </div>
             <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
-              <strong className="text-white">Analysis:</strong> While equal-capacity LoRA adapters cause an <span className="text-rose-400 font-mono">8.4%</span> performance degradation on surrounding knowledge, Ordo-M maintains <span className="text-emerald-400 font-mono font-semibold">0.0% collateral side-damage</span> across all 50-fact update series.
+              {t.fig1Analysis}
             </div>
           </div>
 
@@ -110,12 +117,12 @@ export const OrdoMSection: React.FC = () => {
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center space-x-2 font-mono">
                   <Clock className="w-4 h-4 text-violet-400" />
-                  <span>Figure 2: Incremental Wave Fine-Tuning Parity</span>
+                  <span>{t.fig2Title}</span>
                 </h3>
-                <p className="text-[11px] text-[#8A94A6]">Wave time: 45s vs 75s+ full retrain</p>
+                <p className="text-[11px] text-[#8A94A6]">{t.fig2Sub}</p>
               </div>
               <span className="px-2 py-0.5 rounded bg-violet-950 text-violet-300 text-[10px] font-mono border border-violet-800">
-                96.2% Retention
+                {t.fig2Badge}
               </span>
             </div>
 
@@ -132,49 +139,31 @@ export const OrdoMSection: React.FC = () => {
               </ResponsiveContainer>
             </div>
             <div className="mt-3 p-3 rounded-lg bg-[#050608] border border-[#1E2330] text-[11px] text-[#8A94A6] font-sans">
-              <strong className="text-white">Analysis:</strong> Calibrating initial output projections eliminates wave learning saturation, reaching <span className="text-violet-300 font-mono">96.2% parity</span> with full retraining while taking only 45s per wave.
+              {t.fig2Analysis}
             </div>
           </div>
         </div>
 
         {/* Resource Footprint Table */}
         <div className="glass-panel p-6 rounded-2xl border border-[#1E2330] mb-10">
-          <h3 className="text-sm font-bold text-white mb-3 font-mono">Table 1: Hardware Resource & Quantization Footprint</h3>
+          <h3 className="text-sm font-bold text-white mb-3 font-mono">{t.tableTitle}</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs font-mono">
               <thead>
                 <tr className="border-b border-[#1E2330] text-[#8A94A6]">
-                  <th className="pb-2">Axis / Metric</th>
-                  <th className="pb-2">Measured Empirical Value</th>
-                  <th className="pb-2">Architectural Advantage</th>
+                  <th className="pb-2">{t.colAxis}</th>
+                  <th className="pb-2">{t.colValue}</th>
+                  <th className="pb-2">{t.colAdv}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1E2330] text-slate-300">
-                <tr>
-                  <td className="py-2.5 text-cyan-400">Training Speed Scaling</td>
-                  <td className="py-2.5">Linear exponent 1.05 (0.076s / record / epoch)</td>
-                  <td className="py-2.5 text-[#8A94A6]">Scales cleanly to large doc corpora</td>
-                </tr>
-                <tr>
-                  <td className="py-2.5 text-cyan-400">VRAM Allocation</td>
-                  <td className="py-2.5">0.0112 GB / 1M memory params (0.0034 GB inference)</td>
-                  <td className="py-2.5 text-[#8A94A6]">Enables 27B LLMs on consumer GPUs</td>
-                </tr>
-                <tr>
-                  <td className="py-2.5 text-cyan-400">Inference Throughput</td>
-                  <td className="py-2.5">15.1 → 15.1 tokens/sec</td>
-                  <td className="py-2.5 text-[#8A94A6]">Zero generation latency penalty</td>
-                </tr>
-                <tr>
-                  <td className="py-2.5 text-cyan-400">RAM / NVMe Offloading</td>
-                  <td className="py-2.5">0.98x token generation speed</td>
-                  <td className="py-2.5 text-[#8A94A6]">Memory capacity independent of GPU VRAM</td>
-                </tr>
-                <tr>
-                  <td className="py-2.5 text-cyan-400">Quantization Stability</td>
-                  <td className="py-2.5">Int8 preserves full edit series (Int4 degrades)</td>
-                  <td className="py-2.5 text-[#8A94A6]">Int8 quantized tables recommended</td>
-                </tr>
+                {t.rows.map((row, idx) => (
+                  <tr key={idx}>
+                    <td className="py-2.5 text-cyan-400">{row.axis}</td>
+                    <td className="py-2.5">{row.val}</td>
+                    <td className="py-2.5 text-[#8A94A6]">{row.adv}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -184,9 +173,9 @@ export const OrdoMSection: React.FC = () => {
         <div className="p-5 rounded-2xl bg-[#0F1117] border border-[#1E2330] flex items-start space-x-3 text-xs">
           <Lock className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <div className="font-bold text-white font-mono">Closed-Source Research Access Notice</div>
+            <div className="font-bold text-white font-mono">{t.noticeTitle}</div>
             <p className="text-[#8A94A6] font-light leading-relaxed">
-              Ordo-M source code and internal evaluation harnesses are currently closed-source. Academic researchers and institutional partners interested in reviewing empirical logs or requesting joint research access may contact lead researcher Russel Gavery via GitHub profile <a href="https://github.com/8hrsk" target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline font-mono">@8hrsk</a>.
+              {t.noticeText}
             </p>
           </div>
         </div>

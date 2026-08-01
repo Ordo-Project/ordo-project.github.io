@@ -1,7 +1,14 @@
 import React from 'react';
 import { User, Github, Sparkles, ExternalLink, ShieldCheck, Cpu, Terminal } from 'lucide-react';
+import { Language, translations } from '../translations';
 
-export const AboutSection: React.FC = () => {
+interface AboutSectionProps {
+  lang: Language;
+}
+
+export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
+  const t = translations[lang].about;
+
   return (
     <section id="about" className="py-20 relative bg-[#0B0D13]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,35 +55,35 @@ export const AboutSection: React.FC = () => {
             <div className="md:col-span-8 space-y-4">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-xs font-mono">
                 <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                <span>INDEPENDENT AI RESEARCH</span>
+                <span>{t.tag}</span>
               </div>
 
               <h4 className="text-xl sm:text-2xl font-bold text-white leading-tight font-sans">
-                Research Focus: Non-Destructive LLM Memory & Context Scaling
+                {t.title}
               </h4>
 
               <p className="text-xs sm:text-sm text-[#8A94A6] leading-relaxed font-light">
-                Ordo Project was founded by <strong className="text-white">Russel Gavery</strong> (Gavrilov Ruslan, `@8hrsk`) to investigate fundamental architectural constraints in modern Transformer models: catastrophic forgetting during parameter updates, fine-tuning side-damage in LoRA adapters, and exponential attention mass decay across long context windows.
+                {t.bio}
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 pt-2">
                 <div className="p-4 rounded-xl bg-[#08090C] border border-[#1E2330]">
                   <div className="text-xs font-bold text-white mb-1 flex items-center space-x-2 font-mono">
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span>Ordo-M Memory Isolation</span>
+                    <span>{t.card1Title}</span>
                   </div>
                   <p className="text-xs text-[#8A94A6] font-light leading-relaxed">
-                    Developing external value tables injected at layer 0.66 without altering frozen base model weights ($0.0\%$ side-damage).
+                    {t.card1Text}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#08090C] border border-[#1E2330]">
                   <div className="text-xs font-bold text-white mb-1 flex items-center space-x-2 font-mono">
                     <Cpu className="w-4 h-4 text-violet-400" />
-                    <span>OrdoGen Context Scaling</span>
+                    <span>{t.card2Title}</span>
                   </div>
                   <p className="text-xs text-[#8A94A6] font-light leading-relaxed">
-                    Causal localization of Layer 24 attention head bottlenecks and trainable GQA selectors to eliminate 128K context rot.
+                    {t.card2Text}
                   </p>
                 </div>
               </div>
