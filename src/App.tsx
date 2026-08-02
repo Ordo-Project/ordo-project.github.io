@@ -5,10 +5,11 @@ import { OrdoMSection } from './components/OrdoMSection';
 import { OrdoGenSection } from './components/OrdoGenSection';
 import { TimelineSection } from './components/TimelineSection';
 import { LimitsSection } from './components/LimitsSection';
+import { PublicationsSection } from './components/PublicationsSection';
 import { ResearchDocs } from './components/ResearchDocs';
 import { AboutSection } from './components/AboutSection';
 import { Footer } from './components/Footer';
-import { Language } from './translations';
+import { Language } from './i18n';
 
 const initialLang = (): Language => {
   if (typeof navigator !== 'undefined' && navigator.language?.toLowerCase().startsWith('ru')) {
@@ -47,6 +48,7 @@ export const App: React.FC = () => {
         <OrdoGenSection lang={lang} />
         <TimelineSection lang={lang} />
         <LimitsSection lang={lang} />
+        <PublicationsSection lang={lang} />
         <ResearchDocs lang={lang} />
         <AboutSection lang={lang} />
       </main>

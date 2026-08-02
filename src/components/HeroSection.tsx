@@ -1,6 +1,6 @@
 import React from 'react';
 import { MemoryStick, Zap, ArrowRight, ShieldCheck, Layers, Activity, FileText, Lock, AlertTriangle } from 'lucide-react';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 
 interface HeroSectionProps {
   onExploreOrdoM: () => void;

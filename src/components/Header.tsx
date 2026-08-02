@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert } from 'lucide-react';
-import { Language, translations } from '../translations';
+import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert, FileText } from 'lucide-react';
+import { Language, translations } from '../i18n';
 
 interface HeaderProps {
   activeTab: string;
@@ -28,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
     { id: 'ordogen', label: t.ordoGen, icon: Cpu },
     { id: 'timeline', label: t.timeline, icon: GitCommitVertical },
     { id: 'limits', label: t.limits, icon: ShieldAlert },
+    { id: 'publications', label: t.publications, icon: FileText },
     { id: 'literature', label: t.literature, icon: BookOpen },
     { id: 'about', label: t.about, icon: User },
   ];
@@ -61,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-sm sm:text-base tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors truncate">
+                <span className="font-extrabold text-sm sm:text-base tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors whitespace-nowrap">
                   ORDO RESEARCH
                 </span>
                 <span className="hidden 2xl:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-cyan-400 border border-cyan-900/60">
@@ -83,13 +84,13 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-2.5 2xl:px-3 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-all duration-200 ${
                     isActive
                       ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow-sm'
                       : 'text-[#8A94A6] hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-cyan-400' : ''}`} />
+                  <Icon className={`w-3.5 h-3.5 hidden 2xl:block ${isActive ? 'text-cyan-400' : ''}`} />
                   <span>{item.label}</span>
                 </button>
               );

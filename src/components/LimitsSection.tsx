@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShieldAlert, Circle, ArrowRight } from 'lucide-react';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 import { SectionHeader } from './ui';
 
 interface LimitsSectionProps {

@@ -15,7 +15,7 @@ import {
   Cell,
   LabelList,
 } from 'recharts';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 import {
   editQualityData,
   sideDamageData,

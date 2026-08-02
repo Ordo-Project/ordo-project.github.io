@@ -1,6 +1,6 @@
 import React from 'react';
 import { Cpu, Github, ShieldCheck } from 'lucide-react';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 
 interface FooterProps {
   lang: Language;

@@ -16,7 +16,7 @@ import {
   LabelList,
   ReferenceArea,
 } from 'recharts';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 import {
   contextCurveData,
   curveSeries,

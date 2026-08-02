@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { BookOpen, Search, FlaskConical, Target, AlertTriangle } from 'lucide-react';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 import { papers } from '../data';
 import { SectionHeader } from './ui';
 
@@ -36,7 +36,7 @@ export const ResearchDocs: React.FC<ResearchDocsProps> = ({ lang }) => {
     <section id="literature" className="py-20 relative bg-[#0A0B10] border-b border-[#1E2330]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeader
-          index="05"
+          index="06"
           tag={t.tag}
           title={t.title}
           accent="cyan"

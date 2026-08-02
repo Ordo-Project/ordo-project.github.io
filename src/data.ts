@@ -1,4 +1,4 @@
-import { Language } from './translations';
+import { Language } from './i18n';
 
 type L = Record<Language, string>;
 const L = (en: string, ru: string): L => ({ en, ru });

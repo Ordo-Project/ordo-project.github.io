@@ -1,6 +1,6 @@
 import React from 'react';
 import { User, Github, Sparkles, ExternalLink, ShieldCheck, Cpu, Terminal } from 'lucide-react';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 
 interface AboutSectionProps {
   lang: Language;

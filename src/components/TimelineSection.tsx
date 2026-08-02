@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GitCommitVertical, CheckCircle2, XCircle, GitBranch } from 'lucide-react';
-import { Language, translations } from '../translations';
+import { Language, translations } from '../i18n';
 import { SectionHeader } from './ui';
 
 interface TimelineSectionProps {
