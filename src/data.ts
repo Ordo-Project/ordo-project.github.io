@@ -130,6 +130,69 @@ export const proseArmData = (lang: Language) =>
 export const PROSE_THRESHOLD = 79.9;
 
 // ---------------------------------------------------------------------------
+// Ordo-M — two independent domains, the same phase rule applied to both
+// The bar is half the gap between the base and hybrid retrieval, so a domain
+// that is easier to search sets a higher bar for the same memory.
+// ---------------------------------------------------------------------------
+const twoDomainRaw = [
+  {
+    domain: L('Code library', 'Кодовая библиотека'),
+    base: 49.2,
+    memory: 67.9,
+    rag: 88.0,
+    threshold: 67.8,
+    damage: 22.6,
+    gain: 18.7,
+  },
+  {
+    domain: L('Protocol SDK', 'SDK протокола'),
+    base: 49.7,
+    memory: 64.7,
+    rag: 92.3,
+    threshold: 71.2,
+    damage: 29.6,
+    gain: 15.0,
+  },
+];
+
+export const twoDomainData = (lang: Language) =>
+  twoDomainRaw.map((r) => ({ ...r, domain: r.domain[lang] }));
+
+// ---------------------------------------------------------------------------
+// Ordo-M — the coverage law transfers in shape but not in slope
+// Prediction was registered before the run; the miss has one sign on both points.
+// ---------------------------------------------------------------------------
+const coverageTransferRaw = [
+  { point: L('4 facts per slot', '4 факта на слот'), coverage: 42.4, predicted: 72.0, measured: 64.7 },
+  { point: L('8 facts per slot', '8 фактов на слот'), coverage: 50.1, predicted: 76.1, measured: 67.5 },
+];
+
+export const coverageTransferData = (lang: Language) =>
+  coverageTransferRaw.map((r) => ({ ...r, point: r.point[lang], miss: +(r.measured - r.predicted).toFixed(1) }));
+
+/** Same intercept — it is the base level — and a slope 1.48x flatter. */
+export const COVERAGE_SLOPES = { first: 0.539, second: 0.364, need: 60.3, available: 54.8, threshold: 71.2 };
+
+// ---------------------------------------------------------------------------
+// Ordo-M — the damage budget read by eye: 39 blind pairs, verdicts before the key
+// ---------------------------------------------------------------------------
+const blindReadRaw = [
+  { level: '+39.6%', base: 3, memory: 1, tie: 4 },
+  { level: '+64.2%', base: 4, memory: 1, tie: 3 },
+  { level: '+92.6%', base: 4, memory: 1, tie: 3 },
+  { level: '+96.8%', base: 7, memory: 0, tie: 1 },
+  { level: '+104.7%', base: 7, memory: 0, tie: 1 },
+];
+
+export const blindReadData = () => blindReadRaw.map((r) => ({ ...r }));
+
+export const blindReadSeries = (lang: Language) => ({
+  base: lang === 'ru' ? 'База лучше' : 'Base better',
+  tie: lang === 'ru' ? 'Неразличимы' : 'Indistinguishable',
+  memory: lang === 'ru' ? 'Память лучше' : 'Memory better',
+});
+
+// ---------------------------------------------------------------------------
 // Ordo-M — retriever comparison, recall@1 on the same questions
 // ---------------------------------------------------------------------------
 const retrieverRaw = [
@@ -239,6 +302,54 @@ const selectorRaw = [
 
 export const selectorData = (lang: Language) =>
   selectorRaw.map((r) => ({ policy: r.policy[lang], r1: r.r1, r4: r.r4, scope: r.scope }));
+
+// ---------------------------------------------------------------------------
+// OrdoGen — how much of a corpus a route can even affect
+// On most cases every sampled route returns the same answer, so the effective
+// sample of every routing experiment was about eight times smaller than it looked.
+// ---------------------------------------------------------------------------
+const decidableRaw = [
+  { corpus: L('Corpus A, 120 cases', 'Корпус A, 120 примеров'), decidable: 11.7, unanimous: 88.3, n: 120 },
+  { corpus: L('Corpus B, 180 cases', 'Корпус B, 180 примеров'), decidable: 12.8, unanimous: 87.2, n: 180 },
+];
+
+export const decidableData = (lang: Language) =>
+  decidableRaw.map((r) => ({ ...r, corpus: r.corpus[lang] }));
+
+export const UNANIMITY_PRECISION = { low: 89.8, high: 93.4 };
+
+// ---------------------------------------------------------------------------
+// OrdoGen — permutation probe: reorder the filler, keep evidence in place
+// x is the share of the model's own native window, which is what the second
+// model showed to be the axis that matters — absolute token count is not.
+// ---------------------------------------------------------------------------
+const permutationRaw = [
+  { model: 'A', share: 25, pd: 5.0, tokens: '8K' },
+  { model: 'A', share: 50, pd: 22.5, tokens: '16K' },
+  { model: 'A', share: 75, pd: 35.0, tokens: '24K' },
+  { model: 'B', share: 28, pd: 7.5, tokens: '18K' },
+  { model: 'B', share: 42, pd: 5.0, tokens: '27K' },
+];
+
+export const permutationData = () => permutationRaw.map((r) => ({ ...r }));
+
+export const permutationSeries = (lang: Language) => ({
+  a: lang === 'ru' ? 'Модель 0.6B (в режиме отказа)' : 'Model 0.6B (in the failure regime)',
+  b: lang === 'ru' ? 'Модель 3B (потолок не покинут)' : 'Model 3B (never left the ceiling)',
+});
+
+/** Unanimity under permutation is a gold-free abstention signal. */
+export const PERMUTATION_SLICES = { unanimous: 95.8, decidable: 72.0, fragile: 18, recoverable: 2 };
+
+// ---------------------------------------------------------------------------
+// OrdoGen — unconditional steering, paired control on one runner path
+// ---------------------------------------------------------------------------
+export const steeringControlData = (lang: Language) => [
+  { arm: lang === 'ru' ? 'Обычное чтение' : 'Plain read', correct: 109, of: 120 },
+  { arm: lang === 'ru' ? 'Безусловный стиринг' : 'Unconditional steering', correct: 104, of: 120 },
+];
+
+export const STEERING_CONTROL = { discordantFor: 1, discordantAgainst: 6, p: '0.125', delta: -4.2, goldInRoute: 119 };
 
 // ---------------------------------------------------------------------------
 // Papers / technical library
@@ -571,6 +682,58 @@ export const papers: Paper[] = [
     ),
   },
   {
+    id: 'damage-is-one-number',
+    project: 'Ordo-M',
+    date: '2026-08-03',
+    tags: ['damage', 'proxy', 'порча', 'прокси'],
+    title: L(
+      'The damage looked like one number, and it was a proxy',
+      'Порча выглядела одним числом, но это был прокси'
+    ),
+    summary: L(
+      'Three separate trade-off slopes turn out to be three projections of one line — and the lever that moves that line does not move the damage.',
+      'Три отдельных наклона размена оказались тремя проекциями одной прямой — а рычаг, двигающий эту прямую, порчу за собой не тянет.'
+    ),
+    setup: L(
+      'Eight earlier points re-fitted against a quantity that had been printed in the logs since the first domain run and never stored; then a deliberate attempt to steer that quantity directly, and a blind paired reading of generated continuations.',
+      'Восемь прежних точек переподогнаны против величины, которая печаталась в логах с первого доменного прогона и никогда не сохранялась; затем намеренная попытка двигать её напрямую и слепое парное чтение порождённых продолжений.'
+    ),
+    result: L(
+      'log(1 + ΔPPL) = −0.532 + 2.081 × local anchor penalty, R² = 0.981 across eight points, while knowledge is not determined by it at all (R² = 0.365) — the knowledge-against-text trade-off is a property of the levers, not of the mechanism. Pushing the penalty directly breaks the relation, the harder the worse (residual +2.7 → +31.6 → +46.9), because the penalty is computed on question positions and the damage is measured on prose. The gate saturated and turned out to be identically zero. Blind paired reading of 39 pairs: base 25, memory 3, ties 12, p = 2.7·10⁻⁵.',
+      'log(1 + ΔPPL) = −0.532 + 2.081 × штраф локального якоря, R² = 0.981 по восьми точкам, тогда как знание этой величиной не определяется вовсе (R² = 0.365) — размен «знание против текста» есть свойство рычагов, а не механизма. Прямое давление на штраф связь ломает, и тем сильнее, чем сильнее давить (остаток +2.7 → +31.6 → +46.9), потому что штраф считается на позициях вопроса, а порча мерится на прозе. Вентиль насытился и оказался тождественно нулём. Слепое парное чтение 39 пар: база 25, память 3, равны 12, p = 2.7·10⁻⁵.'
+    ),
+    limit: L(
+      'The judge is a single reader and the author of the hypothesis, blind only to the arm. The axis of the anchor is closed by arithmetic: knowledge = 59.13 + 0.1577 × ΔPPL puts 64.9% at the edge of the budget against a 67.8% threshold.',
+      'Судья один и он же автор гипотезы, слепота только к плечу. Ось якоря закрыта арифметикой: знание = 59.13 + 0.1577 × ΔPPL даёт 64.9% на границе бюджета при пороге 67.8%.'
+    ),
+  },
+  {
+    id: 'second-domain',
+    project: 'Ordo-M',
+    date: '2026-08-04',
+    tags: ['domain', 'transfer', 'домен', 'перенос'],
+    title: L(
+      'Second domain: the coverage law did not transfer',
+      'Второй домен: закон покрытия не перенёсся'
+    ),
+    summary: L(
+      'A second, cleaner corpus as an independent point of the same phase — and a prediction registered before the run that missed by seven to nine points.',
+      'Второй, более чистый корпус как независимая точка той же фазы — и прогноз, записанный до прогона, промахнувшийся на семь-девять пунктов.'
+    ),
+    setup: L(
+      'The server half of a public protocol SDK: 100.0% self-naming by address, 89.3% delta between versions, 507 questions built by the same pipeline as the first domain, with the coverage-law prediction written down before any run.',
+      'Серверная половина публичного SDK протокола: самоназывание 100.0% по адресам, дельта версий 89.3%, 507 вопросов, построенных тем же трактом, что и первый домен, с записанным до прогонов прогнозом по закону покрытия.'
+    ),
+    result: L(
+      'The base scores 50.1% at a 50% coin flip with a log-probability gap of −0.018 — the signature of the first domain reproduced independently. The bar is 71.2% and it is not taken: 64.7% inside the damage budget, 67.5% beyond it. The law transfers in shape but not in slope — the intercept lands on the base level again (49.28 against 49.7) while the slope is 0.364 against 0.539, flatter by a factor of 1.48. Hence a limit named by arithmetic: the threshold needs 60.3% coverage and the corpus can supply 54.8%, so no selection of this corpus can clear the bar.',
+      'База даёт 50.1% при монетке 50% и разрыве логвероятностей −0.018 — подпись первого домена воспроизведена независимо. Порог 71.2% и он не взят: 64.7% внутри бюджета порчи, 67.5% за ним. Закон переносится формой, но не наклоном — свободный член снова ложится на уровень базы (49.28 против 49.7), а наклон 0.364 против 0.539, площе в 1.48 раза. Отсюда предел, названный арифметикой: порогу нужно покрытие 60.3%, а корпус даёт 54.8%, то есть никакой отбор этого корпуса планку не возьмёт.'
+    ),
+    limit: L(
+      'One seed at every point — the shortfall is six times the expected noise, so "not taken" stands, but 64.7% is not yet a measured number. The slope rests on two points, which is a segment rather than a line, and the damage on this domain has not been read by eye.',
+      'По одному зерну на точке — недобор в шесть раз больше ожидаемого шума, поэтому вывод «порог не взят» держится, но 64.7% пока не измеренное число. Наклон стоит на двух точках, то есть это отрезок, а не прямая, и порча на этом домене глазами не читалась.'
+    ),
+  },
+  {
     id: 'context-curve',
     project: 'OrdoGen',
     date: '2026-07-30',
@@ -750,6 +913,84 @@ export const papers: Paper[] = [
     limit: L(
       'Five discordant pairs give a two-sided p=0.0625; this is deliberately not claimed as significant. A causal-only policy finds the right block in 75 of 75 cases at budget 4 and still repairs fewer cases — so block recall is the wrong objective. And the prototype still runs a second dense prefill, so it is not yet a speed-up.',
       'Пять расходящихся пар дают двусторонний p=0.0625; значимость здесь намеренно не заявляется. Политика только на причинных признаках находит нужный блок в 75 случаях из 75 при бюджете 4 и всё равно чинит меньше — значит полнота выбора блоков неверная цель. И прототип всё ещё делает второй плотный прогон, поэтому ускорением пока не является.'
+    ),
+  },
+  {
+    id: 'decidable-set',
+    project: 'OrdoGen',
+    date: '2026-08-03',
+    tags: ['sampling', 'design', 'выборка', 'дизайн'],
+    title: L(
+      'A series of failures was a property of the sample',
+      'Серия провалов оказалась свойством выборки'
+    ),
+    summary: L(
+      'A question never asked of already-paid-for data: on how many cases does the choice of route change the answer at all?',
+      'Вопрос, ни разу не заданный уже оплаченным данным: на скольких примерах состав маршрута вообще меняет ответ?'
+    ),
+    setup: L(
+      'Re-analysis of stored teacher archives, each holding twelve rollouts per case with correctness — until now used only as a source of utility labels. Two independent corpora, no new compute.',
+      'Переразбор сохранённых учительских архивов, в каждом по двенадцать прогонов на пример вместе с правильностью — до сих пор использовавшихся только как источник меток полезности. Два независимых корпуса, без единой новой минуты счёта.'
+    ),
+    result: L(
+      'All twelve routes give an identical answer on 106 of 120 and 157 of 180 cases: only 11.7% and 12.8% are decidable, and the entire headroom lies inside that slice by construction. The effective sample of every previous experiment was therefore about eight times smaller than its nominal size, and the gates that failed could not have been passed by any policy. Route unanimity is a free abstention signal with 89.8–93.4% precision, and decidability is predictable from one cheap read: the bottom 30% by mean answer log-probability captures 79% and 91% of decidable cases.',
+      'Все двенадцать маршрутов дают одинаковый ответ на 106 из 120 и 157 из 180 примеров: разрешимы только 11.7% и 12.8%, и весь запас лежит внутри этого среза по построению. Значит эффективный размер выборки каждого прошлого эксперимента был примерно в восемь раз меньше номинального, а провалившиеся шлюзы не могла пройти никакая политика. Единогласие маршрутов — бесплатный сигнал воздержания с точностью 89.8–93.4%, а разрешимость предсказуема одним дешёвым чтением: нижние 30% по средней логвероятности ответа захватывают 79% и 91% разрешимых примеров.'
+    ),
+    limit: L(
+      'This rescues the mechanism, not the policies: majority voting is falsified outright on the decidable slice, and decidability falls to zero at short lengths, which is why a short-context curriculum could never transfer.',
+      'Это спасает механизм, а не политики: голосование большинством на разрешимом срезе фальсифицировано начисто, а разрешимость на коротких длинах падает до нуля — поэтому обучение на коротком контексте и не переносилось.'
+    ),
+  },
+  {
+    id: 'permutation-probe',
+    project: 'OrdoGen',
+    date: '2026-08-03',
+    tags: ['permutation', 'probe', 'перестановка', 'зонд'],
+    title: L(
+      'Reordering the context breaks one long answer in five',
+      'Перестановка контекста ломает каждый пятый длинный ответ'
+    ),
+    summary: L(
+      'A probe that needs no gold answer and no access to the inside of the model: keep the content, move the blocks.',
+      'Зонд, которому не нужны ни эталонный ответ, ни внутренности модели: содержание сохранить, блоки переставить.'
+    ),
+    setup: L(
+      'Filler lines are permuted while the evidence stays on the same token index; character count, token count and evidence fraction drift by exactly zero across all twelve variants of every base case. 1440 variants across three lengths and two evidence positions.',
+      'Строки-наполнители переставляются, а факт остаётся на том же токенном индексе; число символов, число токенов и доля позиции факта дрейфуют ровно на ноль по всем двенадцати вариантам каждого базового случая. 1440 вариантов на трёх длинах и двух позициях факта.'
+    ),
+    result: L(
+      'Instability rises monotonically with length — 5.0% → 22.5% → 35.0% — and the worst cell, three quarters of the window with late evidence, flips 55% of answers. Unanimity under permutation is a strong gold-free signal: 95.8% accuracy on the unanimous slice against 72.0% on the unstable one. The two probes measure different things: the route probe finds opportunity (upside 8 at 28.6% correct canonical answers), the permutation probe finds fragility (upside 2 at 72.0%), decomposing into 18 fragile cases against 2 recoverable.',
+      'Нестабильность растёт с длиной монотонно — 5.0% → 22.5% → 35.0%, — а худшая ячейка, три четверти окна с поздним фактом, переворачивает 55% ответов. Единогласие по перестановкам — сильный сигнал без эталона: 95.8% точности на единогласном срезе против 72.0% на нестабильном. Два зонда меряют разное: маршрутный находит возможность (запас 8 при 28.6% верных канонов), перестановочный — хрупкость (запас 2 при 72.0%), и раскладывается это на 18 хрупких случаев против 2 восстановимых.'
+    ),
+    limit: L(
+      'Fragility is a gate for abstention, not a basis for an intervention policy. On a second, larger model the probe reported almost nothing — and that run showed why: the corpus had been aligned by absolute token count, which put one model at 83% of its native window and the other at 41%.',
+      'Хрупкость — основание для воздержания, а не для политики вмешательства. На второй, более крупной модели зонд не показал почти ничего — и тот прогон объяснил почему: корпус выравнивался по абсолютному числу токенов, из-за чего одна модель работала на 83% своего окна, а другая на 41%.'
+    ),
+  },
+  {
+    id: 'steering-control',
+    project: 'OrdoGen',
+    date: '2026-08-04',
+    tags: ['steering', 'control', 'стиринг', 'контроль'],
+    title: L(
+      'Unconditional steering does not help, and the premise of six iterations falls',
+      'Безусловный стиринг не помогает, и посылка шести итераций падает'
+    ),
+    summary: L(
+      'The bias that six branches of work had been built on, finally measured against plain reading on one runner path.',
+      'Сдвиг, на котором были построены шесть веток работы, наконец сопоставлен с обычным чтением на одном пути прогона.'
+    ),
+    setup: L(
+      'The same 120 cases through a single runner path, with and without the bias, greedy decoding, decision rule registered in advance.',
+      'Те же 120 примеров через один путь прогона, со сдвигом и без, жадный декод, решающее правило зафиксировано заранее.'
+    ),
+    result: L(
+      'Plain reading 109/120 against 104/120 with steering; discordant pairs 6 against 1, exact two-sided p = 0.125. By the registered rule this is "no difference detected", so harm cannot be claimed — but help is excluded, with a point estimate of −4.2 points. The telling detail: the block that actually contains the answer was inside the route in 119 of 120 cases. The model is biased toward the right block and gets worse. The picture across the project now: unconditional perturbations of reading destroy more than they repair (permutation 18 against 2, steering 6 against 1), while conditional routing on the decidable slice gains 8.',
+      'Обычное чтение 109/120 против 104/120 со стирингом; расходящиеся пары 6 против 1, точный двусторонний p = 0.125. По зарегистрированному правилу это «различие не обнаружено», поэтому вред заявить нельзя — но польза исключена, точечная оценка −4.2 пункта. Показательная деталь: блок, действительно содержащий ответ, лежал в маршруте в 119 случаях из 120. Модель смещают к верному блоку, и от этого становится хуже. Складывающаяся картина по проекту: безусловные возмущения чтения разрушают больше, чем чинят (перестановка 18 против 2, стиринг 6 против 1), тогда как условная маршрутизация на разрешимом срезе даёт +8.'
+    ),
+    limit: L(
+      'This does not overturn the earlier 32K result, where plain reading scored 53% against 91% here — that is a difference of regime, the same lesson the second model taught. What it closes is the unconditional top-k bias as a component of any future policy.',
+      'Это не опровергает прежний результат на 32K, где обычное чтение давало 53% против 91% здесь, — это разница режима, тот же урок, что дала вторая модель. Закрывается ровно безусловный top-k сдвиг как компонент будущей политики.'
     ),
   },
 ];

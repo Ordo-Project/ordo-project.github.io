@@ -9,7 +9,10 @@ const en = {
       {
         name: 'Ordo-M',
         items: [
-          'The M1 bar was cleared by 0.3 points at a seed spread of 1.38. That is reached, not significantly exceeded, and it should be read that way until more seeds exist.',
+          'The M1 bar was cleared by 0.3 points on the first domain at a seed spread of 1.38, and missed by 6.5 on the second. One domain of two is not a phase.',
+          'On the second domain every point rests on a single seed. The shortfall is six times the expected noise, so "not cleared" stands — but 64.7% is not yet a measured number.',
+          'The bar itself is defined as half the distance from the base to hybrid retrieval, which means a domain that searches well raises its own bar. What the memory adds is steady at 15–19 points; what changes is what it is being compared against.',
+          'The coverage law transfers in shape and not in slope — 0.364 against 0.539 — and the second slope rests on two points, which is a segment rather than a line.',
           'It was cleared on a corpus prepared by an external model. The product promise is that a client loads a raw wiki, and raw text demonstrably carries nothing — so the gap between the demo and the promise is one specific missing piece: getting a local model to choose what to write about.',
           'A corpus written by the frozen base itself is statistically indistinguishable from raw text. Its facts are fine; its coverage of what gets asked is half.',
           'The prose bar is set at 79.9% and the memory arm behind it has not been run. Prose is also a different question — the base already knows that domain, so it measures addition rather than acquisition.',
@@ -23,7 +26,10 @@ const en = {
       {
         name: 'OrdoGen',
         items: [
-          'Everything is measured on one 0.6B model at a pinned revision. Whether the same heads carry the same role in a larger model is unknown.',
+          'Everything is measured on one 0.6B model at a pinned revision. The first attempt to transfer the recipe to a 3B model answered nothing, because that model never left its accuracy ceiling — an addressing failure cannot be measured where there are no failures.',
+          'Corpora had been aligned by absolute token count, which is not a normalization: the same length is 83% of one model\'s window and 41% of another\'s. Every cross-model comparison made before this was found has to be read with that in mind.',
+          'Only about an eighth of long-context cases can be moved by routing at all. The headroom of every intervention in this track is bounded by that slice, and past acceptance gates were set against nominal sample sizes.',
+          'Unconditional interventions are closed, not merely unproven: reordering breaks 18 cases against 2 repaired, and a top-k bias loses 6 pairs against 1 while the answer-bearing block was already in the route 119 times out of 120.',
           'No transfer to 64K or 128K has been shown for the learned selector, and prompt-level interventions provably do not extrapolate that far.',
           'Compositional tasks — multi-hop, aggregation, update ordering — do not benefit from any intervention tried so far. On a 0.6B model the capability may simply be absent.',
           'There is no subquadratic speed-up yet. The current prototype runs a second dense prefill and is slower end to end than the baseline.',
@@ -34,10 +40,13 @@ const en = {
     ],
     nextTitle: 'What comes next',
     nextItems: [
-      'Ordo-M: turn the width of the memory slot on a real domain — the last untested capacity axis, and the one standing between 38.3% coverage and 49.7%.',
+      'Ordo-M: two more seeds on the second domain, so the number that goes into the two-domain table has a spread attached to it.',
+      'Ordo-M: a third point on the second slope. The prediction of 59.0% is already written down, and if it holds, a domain ceiling can be computed from two points instead of six runs.',
+      'Ordo-M: turn the width of the memory slot on a real domain — the last untested capacity axis.',
       'Ordo-M: teach a local generator to choose what to write about. Coverage is measurable on a laptop now, so the loop is cheap.',
       'Ordo-M: run the memory arm on the prose domain against the 79.9% bar.',
-      'OrdoGen: replace recall with an outcome-aware objective, so the selector is scored on repairs kept rather than blocks found.',
+      'OrdoGen: build the policy conditional. Abstain on unanimity, intervene only on the decidable slice, and use the cheap log-probability read to find it.',
+      'OrdoGen: a baseline accuracy curve before any probe, and a within-model length sweep on a model that stays cheap deep into its window.',
       'OrdoGen: hard selected-block attention with a fused kernel, and only then a move to 64K and 128K.',
     ],
   };
@@ -54,7 +63,10 @@ export const limits: Bilingual<typeof en> = {
       {
         name: 'Ordo-M',
         items: [
-          'Планка M1 взята с запасом 0.3 пункта при разбросе по зёрнам 1.38. Это «достигнуто», а не «значимо превышено», и читать это следует именно так, пока зёрен не станет больше.',
+          'Планка M1 взята с запасом 0.3 пункта на первом домене при разбросе по зёрнам 1.38 и недобрана на 6.5 на втором. Один домен из двух — это не фаза.',
+          'На втором домене каждая точка стоит на одном зерне. Недобор в шесть раз больше ожидаемого шума, поэтому вывод «не взята» держится, но 64.7% пока не измеренное число.',
+          'Сама планка задана как половина расстояния от базы до гибридного поиска, а значит домен, который хорошо ищется, поднимает себе планку сам. Прибавка памяти ровная — 15–19 пунктов; меняется то, с чем её сравнивают.',
+          'Закон покрытия переносится формой, но не наклоном — 0.364 против 0.539, — и второй наклон стоит на двух точках, то есть это отрезок, а не прямая.',
           'Взята она на корпусе, подготовленном внешней моделью. Продуктовое обещание — что клиент грузит сырую вики, а сырой текст доказанно не несёт ничего; значит разрыв между демонстрацией и обещанием сводится к одному конкретному недостающему куску: научить локальную модель выбирать, о чём писать.',
           'Корпус, написанный самой замороженной базой, статистически неотличим от сырого текста. Факты в нём в порядке; покрытие того, о чём спрашивают, вдвое ниже.',
           'Планка для прозы выставлена на 79.9%, и плечо памяти за ней не прогонялось. Проза — к тому же другой вопрос: базовая модель этот домен уже знает, поэтому там меряется добавление, а не приобретение.',
@@ -68,7 +80,10 @@ export const limits: Bilingual<typeof en> = {
       {
         name: 'OrdoGen',
         items: [
-          'Всё измерено на одной модели 0.6B на зафиксированной ревизии. Несут ли те же головы ту же роль в модели крупнее — неизвестно.',
+          'Всё измерено на одной модели 0.6B на зафиксированной ревизии. Первая попытка перенести рецепт на модель 3B не ответила ни на что: та модель так и не ушла со своего потолка точности, а отказ адресации нельзя измерить там, где отказов нет.',
+          'Корпуса выравнивались по абсолютному числу токенов, а это не нормировка: одна и та же длина составляет 83% окна одной модели и 41% окна другой. Всякое кросс-модельное сравнение, сделанное до этой находки, нужно читать с этой поправкой.',
+          'Маршрутизацией вообще можно сдвинуть лишь около восьмой части длинных примеров. Запас любого вмешательства в этом треке ограничен этим срезом, а прежние приёмочные шлюзы ставились против номинальных размеров выборки.',
+          'Безусловные вмешательства закрыты, а не просто не доказаны: перестановка ломает 18 случаев против 2 починенных, а top-k сдвиг проигрывает 6 пар против 1 — притом что блок с ответом и так лежал в маршруте 119 раз из 120.',
           'Перенос обучаемого селектора на 64K и 128K не показан, а промптовые вмешательства доказанно так далеко не экстраполируются.',
           'Композиционные задачи — многошаговые вопросы, агрегация, порядок обновлений — не выигрывают ни от одного испробованного вмешательства. На модели 0.6B этой способности может просто не быть.',
           'Субквадратичного ускорения пока нет. Нынешний прототип делает второй плотный прогон и сквозным замером медленнее базового.',
@@ -79,10 +94,13 @@ export const limits: Bilingual<typeof en> = {
     ],
     nextTitle: 'Что дальше',
     nextItems: [
-      'Ordo-M: повернуть ширину слота памяти на настоящем домене — последнюю непроверенную ось ёмкости, ту самую, что стоит между покрытием 38.3% и 49.7%.',
+      'Ordo-M: ещё два зерна на втором домене, чтобы у числа, идущего в таблицу двух доменов, была σ.',
+      'Ordo-M: третья точка второго наклона. Прогноз 59.0% уже записан, и если он устоит, потолок домена можно будет считать по двум точкам вместо шести прогонов.',
+      'Ordo-M: повернуть ширину слота памяти на настоящем домене — последнюю непроверенную ось ёмкости.',
       'Ordo-M: научить локальный генератор выбирать, о чём писать. Покрытие теперь считается на ноутбуке, поэтому цикл дешёвый.',
       'Ordo-M: прогнать плечо памяти на прозаическом домене против планки 79.9%.',
-      'OrdoGen: заменить полноту выбора блоков целью, зависящей от исхода, чтобы селектор оценивался по удержанным починкам, а не по найденным блокам.',
+      'OrdoGen: сделать политику условной. Воздерживаться при единогласии, вмешиваться только на разрешимом срезе и находить его дешёвым чтением логвероятностей.',
+      'OrdoGen: базовая кривая точности до всякого зонда и свип по длине внутри одной модели — на такой, что остаётся дешёвой вглубь своего окна.',
       'OrdoGen: жёсткое внимание по выбранным блокам со слитым ядром, и только после этого переход на 64K и 128K.',
     ],
   },

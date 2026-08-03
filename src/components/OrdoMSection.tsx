@@ -31,6 +31,11 @@ import {
   PROSE_THRESHOLD,
   GAIN_KNEE,
   COVERAGE_LAW,
+  twoDomainData,
+  coverageTransferData,
+  blindReadData,
+  blindReadSeries,
+  COVERAGE_SLOPES,
 } from '../data';
 import { SectionHeader, FigureCard, AXIS, TOOLTIP_STYLE, LEGEND_STYLE } from './ui';
 
@@ -51,6 +56,10 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
   const proseArms = proseArmData(lang);
   const arms = domainArmData(lang);
   const retrievers = retrieverData(lang);
+  const domains = twoDomainData(lang);
+  const transfer = coverageTransferData(lang);
+  const blind = blindReadData();
+  const blindLabels = blindReadSeries(lang);
 
   const armColor = (kind: string) =>
     kind === 'base'
@@ -492,6 +501,115 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
                   ))}
                   <LabelList dataKey="prefer" position="right" fill="#8A94A6" fontSize={10} />
                 </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          {/* Two domains under the same phase rule */}
+          <FigureCard
+            title={t.fig10Title}
+            sub={t.fig10Sub}
+            badge={t.fig10Badge}
+            badgeTone="cyan"
+            analysisLabel={c.analysis}
+            analysis={t.fig10Analysis}
+            icon={<Layers className="w-4 h-4 text-cyan-400 shrink-0" />}
+            chartMinWidth="420px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={domains} margin={{ top: 24, right: 12, left: -14, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="domain" stroke="#8A94A6" tick={AXIS} />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[40, 100]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Bar isAnimationActive={false} dataKey="base" name={c.baseArm} fill="#475569" radius={[4, 4, 0, 0]} />
+                <Bar isAnimationActive={false} dataKey="memory" name={c.memoryArm} fill="#10B981" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="memory" position="top" fill="#10B981" fontSize={10} />
+                </Bar>
+                <Bar isAnimationActive={false} dataKey="rag" name={c.ragArm} fill="#22D3EE" radius={[4, 4, 0, 0]} />
+                {/* The bar is derived per domain, so it is a series and not one line. */}
+                <Line
+                  isAnimationActive={false}
+                  type="linear"
+                  dataKey="threshold"
+                  name={c.thresholdArm}
+                  stroke="#F59E0B"
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
+                  dot={{ r: 4, fill: '#F59E0B' }}
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          {/* Coverage law: predicted before the run against measured */}
+          <FigureCard
+            title={t.fig11Title}
+            sub={t.fig11Sub}
+            badge={t.fig11Badge}
+            badgeTone="rose"
+            analysisLabel={c.analysis}
+            analysis={t.fig11Analysis}
+            icon={<TrendingUp className="w-4 h-4 text-rose-400 shrink-0" />}
+            chartMinWidth="420px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={transfer} margin={{ top: 24, right: 12, left: -14, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="point" stroke="#8A94A6" tick={AXIS} />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[55, 80]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <ReferenceLine
+                  y={COVERAGE_SLOPES.threshold}
+                  stroke="#F59E0B"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: `${COVERAGE_SLOPES.threshold}%`,
+                    position: 'insideTopLeft',
+                    fill: '#F59E0B',
+                    fontSize: 10,
+                  }}
+                />
+                <Bar isAnimationActive={false} dataKey="predicted" name={c.predicted} fill="#8B5CF6" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="predicted" position="top" fill="#A78BFA" fontSize={10} />
+                </Bar>
+                <Bar isAnimationActive={false} dataKey="measured" name={c.measured} fill="#F43F5E" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="measured" position="top" fill="#FB7185" fontSize={10} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          {/* Blind paired reading of the damage budget */}
+          <FigureCard
+            title={t.fig12Title}
+            sub={t.fig12Sub}
+            badge={t.fig12Badge}
+            badgeTone="violet"
+            analysisLabel={c.analysis}
+            analysis={t.fig12Analysis}
+            icon={<FileText className="w-4 h-4 text-violet-400 shrink-0" />}
+            chartMinWidth="420px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={blind} margin={{ top: 20, right: 12, left: -20, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="level" stroke="#8A94A6" tick={AXIS} />
+                <YAxis stroke="#8A94A6" tick={AXIS} allowDecimals={false} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Bar isAnimationActive={false} stackId="p" dataKey="base" name={blindLabels.base} fill="#F43F5E" />
+                <Bar isAnimationActive={false} stackId="p" dataKey="tie" name={blindLabels.tie} fill="#475569" />
+                <Bar
+                  isAnimationActive={false}
+                  stackId="p"
+                  dataKey="memory"
+                  name={blindLabels.memory}
+                  fill="#10B981"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </FigureCard>

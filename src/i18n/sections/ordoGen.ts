@@ -16,7 +16,7 @@ const en = {
       },
       {
         title: '3. The right address repairs the failure',
-        text: 'Giving those same three heads a small bias toward the correct evidence — with the answer never shown to the model — repairs 9 of 35 frozen failures with zero regressions (40/75 → 49/75, p=0.0039). Matched control heads receive the identical address and identical bias and repair nothing. The address must land in a path the model can convert into an answer.',
+        text: 'Giving those same three heads a small bias toward the correct evidence — with the answer never shown to the model — repairs 9 of 35 frozen failures with zero regressions (40/75 → 49/75, p=0.0039). Matched control heads receive the identical address and identical bias and repair nothing. But the same bias applied unconditionally, to every case rather than to failures, loses 6 pairs against 1: the address has to arrive where reading is actually broken.',
       },
     ],
     fig1Title: 'Functional context curve by task',
@@ -44,6 +44,21 @@ const en = {
     fig5Badge: 'Recall@1 72%, Recall@4 90.7%',
     fig5Analysis:
       'The selector is a linear ranker over deployable features — no quadratic attention map, no long-context fitting, and no exposure to 32K data or to the known repair cases while fitting. It transfers. But the ablations carry the more useful lesson: a policy using only causal-head features finds the right block in 75 of 75 cases at budget 4, and still repairs fewer cases than the full policy. Two routes can both contain the evidence and differ in what else they drag in. Optimizing block recall alone is therefore the wrong objective — and that is a causal counterexample, not a hunch.',
+    fig6Title: 'How much of a test set a route can move at all',
+    fig6Sub: 'Twelve sampled routes per case, re-read from archives already paid for',
+    fig6Badge: 'Effective sample ~8× smaller',
+    fig6Analysis:
+      'A question that had never been asked of this data: on how many cases does the choice of route change the answer? On two independent corpora the answer is 11.7% and 12.8% — everywhere else all twelve routes return the same thing, right or wrong. Since the entire headroom lies inside that slice by construction, every routing experiment in this track had an effective sample about eight times smaller than its nominal size, and the acceptance gates that kept failing could not have been passed by any policy whatsoever. That reframes a string of negative results: they were a property of the sampling design, not evidence against the mechanism. Two things fall out for free. Route unanimity is an abstention signal with 89.8–93.4% precision — exactly the "do not touch a working read" ability that six iterations had tried to learn. And decidability is predictable from one cheap read: the bottom 30% by mean answer log-probability captures 79% and 91% of the decidable cases.',
+    fig7Title: 'Reorder the context and one long answer in three flips',
+    fig7Sub: 'Filler permuted, evidence pinned to the same token index; x is the share of the model\'s own window',
+    fig7Badge: 'Gold-free, model-agnostic probe',
+    fig7Analysis:
+      'The manipulation is clean to the byte: character count, token count and the token index of the evidence drift by exactly zero across all twelve permutations of each case. Only the order of the surrounding lines changes — and instability grows monotonically with length, from 5.0% to 35.0%, reaching 55% in the worst cell. Unanimity under permutation predicts correctness without any gold answer at all: 95.8% on the unanimous slice against 72.0% on the unstable one. The second model is the more instructive line: it reports almost nothing, because it never left its accuracy ceiling — a failure mode cannot be measured where there are no failures. That exposed a design error worth publishing. The corpora had been aligned by absolute token count, which put one model at 83% of its native window and the other at 41%. The axis is the share of the window, not the number of tokens, and a baseline curve must come first.',
+    fig8Title: 'Steering unconditionally makes reading worse',
+    fig8Sub: 'The same 120 cases through one runner path, with and without the bias',
+    fig8Badge: 'Point estimate −4.2 points',
+    fig8Analysis:
+      'This is the control that six iterations of routing work had been missing, and it goes against the premise. Plain reading scores 109/120, the same reading with an unconditional top-k bias scores 104/120; discordant pairs 6 against 1, exact two-sided p = 0.125. By the pre-registered rule that is "no difference detected", so harm cannot be claimed — but help is excluded, and the direction reproduced once the runner-path confound was removed. The detail that explains it: the block actually containing the answer was inside the route in 119 of 120 cases. The model is being pushed toward the right block and gets worse anyway, so the problem was never where to look — an unconditional bias disturbs a read that already worked. Together with the permutation result, the picture is consistent: unconditional perturbations destroy more than they repair (18 against 2, and 6 against 1), while conditional routing on the decidable slice gains 8. The earlier 32K result is not overturned; there plain reading scored 53% against 91% here, which is a difference of regime.',
     tableTitle: 'What was ruled out',
     colHyp: 'Hypothesis',
     colResult: 'Result',
@@ -55,6 +70,8 @@ const en = {
       { hyp: 'A format-consistency verifier can gate a cascade', result: '140/140 on literal retrieval, but it accepted five wrong structured outputs on compositional tasks — truncated intermediate steps and stale values', verdict: 'Unsound; must be task-aware' },
       { hyp: 'Amplifying the causal heads is enough', result: 'Scaling the same heads by 1.5× produced neither gains nor regressions — amplitude without a routed address does nothing', verdict: 'Necessary but not sufficient' },
       { hyp: 'The current prototype is already a speed-up', result: 'Intervention overhead is about 2.5%, but the selector still runs a second dense prefill; measured end to end it is slower, not faster', verdict: 'Not yet a systems win' },
+      { hyp: 'An unconditional top-k bias can be a component of a policy', result: 'Paired control on one runner path: 109/120 plain against 104/120 steered, discordant 6 against 1 — and the answer-bearing block was already in the route in 119 of 120 cases', verdict: 'Closed as unconditional' },
+      { hyp: 'Majority vote over sampled routes recovers the headroom', result: 'Falsified three times on the decidable slice at no compute cost: most routes converge on the same distractor, so the vote reproduces it', verdict: 'Rejected' },
     ],
   };
 
@@ -77,7 +94,7 @@ export const ordoGen: Bilingual<typeof en> = {
       },
       {
         title: '3. Правильный адрес чинит провал',
-        text: 'Небольшой сдвиг тех же трёх голов в сторону нужного фрагмента — при том что ответ модели не показывают — чинит 9 из 35 замороженных ошибок без единой регрессии (40/75 → 49/75, p=0.0039). Контрольные головы получают тот же адрес и тот же сдвиг и не чинят ничего. Адрес обязан попасть в путь, который модель умеет превратить в ответ.',
+        text: 'Небольшой сдвиг тех же трёх голов в сторону нужного фрагмента — при том что ответ модели не показывают — чинит 9 из 35 замороженных ошибок без единой регрессии (40/75 → 49/75, p=0.0039). Контрольные головы получают тот же адрес и тот же сдвиг и не чинят ничего. Но тот же сдвиг, применённый безусловно — ко всем случаям, а не к отказам, — проигрывает 6 пар против 1: адрес должен приходить туда, где чтение действительно сломано.',
       },
     ],
     fig1Title: 'Кривая функционального контекста по задачам',
@@ -105,6 +122,21 @@ export const ordoGen: Bilingual<typeof en> = {
     fig5Badge: 'Recall@1 72%, Recall@4 90.7%',
     fig5Analysis:
       'Селектор — линейный ранкер над пригодными к развёртыванию признаками: ни квадратичной карты внимания, ни подгонки под длинный контекст, и при обучении он не видел ни данных 32K, ни известных случаев починки. Он переносится. Но полезнее оказался урок из абляций: политика только на признаках причинных голов находит нужный блок в 75 случаях из 75 при бюджете 4 — и чинит при этом меньше случаев, чем полная политика. Два маршрута могут оба содержать нужный фрагмент и различаться тем, что ещё они с собой тащат. Значит оптимизировать одну лишь полноту выбора блоков — неверная цель, и это причинный контрпример, а не догадка.',
+    fig6Title: 'Какую часть набора маршрут вообще способен сдвинуть',
+    fig6Sub: 'По двенадцать выбранных маршрутов на пример, перечитано из уже оплаченных архивов',
+    fig6Badge: 'Эффективная выборка меньше примерно в 8 раз',
+    fig6Analysis:
+      'Вопрос, который этим данным ни разу не задавали: на скольких примерах выбор маршрута вообще меняет ответ? На двух независимых корпусах ответ 11.7% и 12.8% — на всех остальных все двенадцать маршрутов возвращают одно и то же, верное или неверное. А поскольку весь запас лежит внутри этого среза по построению, у каждого маршрутного эксперимента трека эффективная выборка была примерно в восемь раз меньше номинальной, и приёмочные шлюзы, которые раз за разом не проходились, не могла пройти вообще никакая политика. Это переосмысляет целую череду отрицательных результатов: они были свойством дизайна выборки, а не доводом против механизма. Две вещи выпадают даром. Единогласие маршрутов — сигнал воздержания с точностью 89.8–93.4%, ровно та способность «не трогать работающее чтение», которую шесть итераций пытались выучить. И разрешимость предсказывается одним дешёвым чтением: нижние 30% по средней логвероятности ответа захватывают 79% и 91% разрешимых примеров.',
+    fig7Title: 'Переставь контекст — и каждый третий длинный ответ переворачивается',
+    fig7Sub: 'Наполнитель переставлен, факт закреплён на том же токенном индексе; по оси x — доля собственного окна модели',
+    fig7Badge: 'Зонд без эталона и без внутренностей модели',
+    fig7Analysis:
+      'Манипуляция чиста до байта: число символов, число токенов и токенный индекс факта дрейфуют ровно на ноль по всем двенадцати перестановкам каждого случая. Меняется только порядок окружающих строк — и нестабильность растёт с длиной монотонно, с 5.0% до 35.0%, доходя в худшей ячейке до 55%. Единогласие по перестановкам предсказывает правильность вообще без эталона: 95.8% на единогласном срезе против 72.0% на нестабильном. Вторая модель — более поучительная линия: она не показывает почти ничего, потому что так и не ушла со своего потолка точности, а режим отказа нельзя измерить там, где отказов нет. Это вскрыло ошибку дизайна, которую стоит опубликовать. Корпуса выравнивались по абсолютному числу токенов, из-за чего одна модель работала на 83% своего окна, а другая на 41%. Ось — доля окна, а не число токенов, и базовая кривая обязана идти первой.',
+    fig8Title: 'Безусловный стиринг делает чтение хуже',
+    fig8Sub: 'Те же 120 примеров через один путь прогона, со сдвигом и без',
+    fig8Badge: 'Точечная оценка −4.2 пункта',
+    fig8Analysis:
+      'Это тот контроль, которого не хватало шести итерациям маршрутной работы, и он идёт против посылки. Обычное чтение даёт 109/120, оно же с безусловным top-k сдвигом — 104/120; расходящихся пар 6 против 1, точный двусторонний p = 0.125. По заранее зарегистрированному правилу это «различие не обнаружено», поэтому вред заявлять нельзя, — но польза исключена, а направление воспроизвелось, когда конфаунд разных путей прогона убрали. Объясняющая деталь: блок, реально содержащий ответ, лежал в маршруте в 119 случаях из 120. Модель толкают к верному блоку, и ей от этого всё равно хуже, — значит вопрос никогда не был в том, куда смотреть: безусловный сдвиг расстраивает уже работающее чтение. Вместе с перестановочным результатом картина согласована: безусловные возмущения разрушают больше, чем чинят (18 против 2 и 6 против 1), тогда как условная маршрутизация на разрешимом срезе даёт +8. Прежний результат на 32K это не опровергает — там обычное чтение давало 53% против 91% здесь, и это разница режима.',
     tableTitle: 'Что было отвергнуто',
     colHyp: 'Гипотеза',
     colResult: 'Результат',
@@ -116,6 +148,8 @@ export const ordoGen: Bilingual<typeof en> = {
       { hyp: 'Проверяющий по согласованности формата может управлять каскадом', result: '140/140 на дословном поиске, но он принял пять неверных структурированных ответов на композиционных задачах — усечённые промежуточные шаги и устаревшие значения', verdict: 'Несостоятелен; нужен проверяющий под задачу' },
       { hyp: 'Достаточно усилить причинные головы', result: 'Усиление тех же голов в 1.5 раза не дало ни улучшений, ни регрессий — амплитуда без маршрутизированного адреса не делает ничего', verdict: 'Необходимо, но не достаточно' },
       { hyp: 'Нынешний прототип — уже ускорение', result: 'Накладные расходы вмешательства около 2.5%, но селектор всё ещё выполняет второй плотный прогон; сквозным замером это медленнее, а не быстрее', verdict: 'Пока не системная победа' },
+      { hyp: 'Безусловный top-k сдвиг годится как компонент политики', result: 'Парный контроль на одном пути прогона: 109/120 без сдвига против 104/120 со сдвигом, расходящихся пар 6 против 1 — притом что блок с ответом и так лежал в маршруте в 119 случаях из 120', verdict: 'Закрыт как безусловный' },
+      { hyp: 'Голосование большинством по маршрутам возвращает запас', result: 'Фальсифицировано трижды на разрешимом срезе и без единой минуты счёта: большинство маршрутов сходится на одном отвлекающем ответе, и голос его же и воспроизводит', verdict: 'Отвергнуто' },
     ],
   },
 };

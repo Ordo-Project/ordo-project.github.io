@@ -27,6 +27,12 @@ import {
   causalSeries,
   attentionData,
   selectorData,
+  decidableData,
+  permutationData,
+  permutationSeries,
+  steeringControlData,
+  UNANIMITY_PRECISION,
+  PERMUTATION_SLICES,
 } from '../data';
 import { SectionHeader, FigureCard, AXIS, TOOLTIP_STYLE, LEGEND_STYLE } from './ui';
 
@@ -50,6 +56,19 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
   const attention = attentionData(lang);
   const selector = selectorData(lang);
   const rows = heatmapRows(lang);
+  const decidable = decidableData(lang);
+  const permutation = permutationData();
+  const permNames = permutationSeries(lang);
+  const steering = steeringControlData(lang);
+
+  /** One row per share-of-window point, with a column per model, so the two
+   *  curves can be drawn against the axis the second run showed to be the real one. */
+  const permByShare = permutation.map((p) => ({
+    share: p.share,
+    tokens: p.tokens,
+    a: p.model === 'A' ? p.pd : null,
+    b: p.model === 'B' ? p.pd : null,
+  }));
 
   const cards = [
     { icon: AlertTriangle, tone: 'bg-rose-500/10 text-rose-400', data: t.cards[0] },
@@ -291,6 +310,141 @@ export const OrdoGenSection: React.FC<OrdoGenSectionProps> = ({ lang }) => {
               </BarChart>
             </ResponsiveContainer>
           </FigureCard>
+        </div>
+
+        {/* Figures 6-8 — what the re-analysis and the two probes found */}
+        <div className="grid lg:grid-cols-2 gap-6 mb-8 min-w-0">
+          <FigureCard
+            title={t.fig6Title}
+            sub={t.fig6Sub}
+            badge={t.fig6Badge}
+            badgeTone="rose"
+            analysisLabel={c.analysis}
+            analysis={t.fig6Analysis}
+            icon={<Grid3x3 className="w-4 h-4 text-rose-400 shrink-0" />}
+            chartHeight="h-56"
+            chartMinWidth="400px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={decidable} layout="vertical" margin={{ top: 8, right: 40, left: 8, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" horizontal={false} />
+                <XAxis type="number" stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
+                <YAxis type="category" dataKey="corpus" stroke="#8A94A6" tick={AXIS} width={150} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Bar
+                  isAnimationActive={false}
+                  stackId="d"
+                  dataKey="decidable"
+                  name={`${lang === 'ru' ? 'Разрешимые' : 'Decidable'}`}
+                  fill="#F43F5E"
+                  barSize={18}
+                >
+                  <LabelList dataKey="decidable" position="insideLeft" fill="#FFE4E6" fontSize={10} />
+                </Bar>
+                <Bar
+                  isAnimationActive={false}
+                  stackId="d"
+                  dataKey="unanimous"
+                  name={`${lang === 'ru' ? 'Единогласные' : 'Unanimous'} · ${UNANIMITY_PRECISION.low}–${UNANIMITY_PRECISION.high}%`}
+                  fill="#334155"
+                  barSize={18}
+                  radius={[0, 4, 4, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          <FigureCard
+            title={t.fig8Title}
+            sub={t.fig8Sub}
+            badge={t.fig8Badge}
+            badgeTone="amber"
+            analysisLabel={c.analysis}
+            analysis={t.fig8Analysis}
+            icon={<Crosshair className="w-4 h-4 text-amber-400 shrink-0" />}
+            chartHeight="h-56"
+            chartMinWidth="380px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={steering} margin={{ top: 24, right: 12, left: -16, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="arm" stroke="#8A94A6" tick={AXIS} />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[90, 120]} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Bar isAnimationActive={false} dataKey="correct" name="/120" fill="#F59E0B" radius={[4, 4, 0, 0]} barSize={52}>
+                  <Cell fill="#10B981" />
+                  <Cell fill="#F43F5E" />
+                  <LabelList dataKey="correct" position="top" fill="#8A94A6" fontSize={11} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+        </div>
+
+        <div className="mb-8 min-w-0">
+          <FigureCard
+            title={t.fig7Title}
+            sub={t.fig7Sub}
+            badge={t.fig7Badge}
+            badgeTone="violet"
+            analysisLabel={c.analysis}
+            analysis={t.fig7Analysis}
+            icon={<TrendingUp className="w-4 h-4 text-violet-400 shrink-0" />}
+            chartMinWidth="460px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={permByShare} margin={{ top: 24, right: 16, left: -14, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis
+                  dataKey="share"
+                  stroke="#8A94A6"
+                  tick={AXIS}
+                  type="number"
+                  domain={[20, 80]}
+                  unit="%"
+                  label={{
+                    value: lang === 'ru' ? 'доля собственного окна модели' : 'share of the model’s own window',
+                    position: 'insideBottom',
+                    offset: -2,
+                    fill: '#475569',
+                    fontSize: 10,
+                  }}
+                />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[0, 40]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Line
+                  isAnimationActive={false}
+                  connectNulls
+                  type="monotone"
+                  dataKey="a"
+                  name={permNames.a}
+                  stroke="#8B5CF6"
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: '#8B5CF6' }}
+                >
+                  <LabelList dataKey="a" position="top" fill="#A78BFA" fontSize={10} />
+                </Line>
+                <Line
+                  isAnimationActive={false}
+                  connectNulls
+                  type="monotone"
+                  dataKey="b"
+                  name={permNames.b}
+                  stroke="#475569"
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
+                  dot={{ r: 4, fill: '#475569' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </FigureCard>
+          <p className="mt-3 text-[11px] text-[#475569] font-mono">
+            {lang === 'ru'
+              ? `Единогласный срез ${PERMUTATION_SLICES.unanimous}% против ${PERMUTATION_SLICES.decidable}% на нестабильном · ${PERMUTATION_SLICES.fragile} хрупких против ${PERMUTATION_SLICES.recoverable} восстановимых`
+              : `Unanimous slice ${PERMUTATION_SLICES.unanimous}% against ${PERMUTATION_SLICES.decidable}% on the unstable one · ${PERMUTATION_SLICES.fragile} fragile against ${PERMUTATION_SLICES.recoverable} recoverable`}
+          </p>
         </div>
 
         {/* Ruled out */}

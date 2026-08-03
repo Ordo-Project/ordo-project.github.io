@@ -59,6 +59,21 @@ const en = {
     fig9Badge: 'Threshold 79.9%',
     fig9Analysis:
       'The prose domain is usable, and it is harder in a way worth stating rather than hiding. The base already knows Kubernetes: 64.8% against 47.5% on the code library, with a log-probability margin of +0.591 against −0.020. So on prose the question stops being "can the memory bring knowledge the model lacks" and becomes "can it add to what the model already has", and the phase threshold rises to 79.9%. The indirect bucket is 20.6% of the set there; search answers it at 94.9% and the memory is silent on it by construction, because no mention means no address. The memory arm on this domain has not been run yet — this chart is the bar, not the result.',
+    fig10Title: 'Two domains: the gain is constant, the bar is not',
+    fig10Sub: 'The same phase rule applied to a code library and to a protocol SDK',
+    fig10Badge: 'Cleared 1 of 2',
+    fig10Analysis:
+      'Bringing both domains into one chart was more useful than either alone. What the memory adds over the base holds in a narrow band across two entirely different sources — 18.7 and 15.0 points — while the bar, defined as half the distance from the base to hybrid retrieval, moves with how well the domain happens to search. The SDK searches better (92.3% against 88.0%), so its bar sits 3.4 points higher, exactly where the memory does not reach: 64.7% against 71.2%. The uncomfortable consequence is worth stating before someone else states it: a rule of "half the gap to retrieval" penalises a well-structured domain. It still works as a phase criterion, because the point was to compare the memory against the alternative rather than against zero — but it must be read as "has the memory caught up with retrieval", not as "does the memory bring knowledge". To the second question the answer on both domains is a firm yes.',
+    fig11Title: 'The coverage law transfers in shape, not in slope',
+    fig11Sub: 'Prediction written down before the run; the miss has the same sign on both points',
+    fig11Badge: 'Missed by 7.3 and 8.6 points',
+    fig11Analysis:
+      'The straight line fitted on the first domain was used to predict the second before a single run — 72.0% and 76.1%. Measured: 64.7% and 67.5%. The miss is seven times the expected noise, so it is a property and not scatter. What survives is the intercept, which lands on the base level again (49.28 against 49.7); what does not is the slope, 0.364 against 0.539, flatter by a factor of 1.48. The form of the dependence transfers, its steepness does not, and that turns a question about a domain into arithmetic: this threshold needs 60.3% coverage and the corpus can supply at most 54.8%, so no better selection of this corpus can clear the bar. It is the first time a limit was named before running into it — and the caveats are equally clear: one seed per point, and a slope drawn through two points is a segment, not a line.',
+    fig12Title: 'The damage budget, read by a human',
+    fig12Sub: '39 blind pairs across five damage levels; verdicts recorded before the key was opened',
+    fig12Badge: 'Base 25, memory 3, p = 2.7·10⁻⁵',
+    fig12Analysis:
+      'Perplexity is a probe, and a probe can be arbitrarily strict. So the continuations were read blind, in pairs, with the verdict written down before the arm was revealed. The damage is visible, and it grows with the number: at +39.6% half the pairs are indistinguishable, and from +96.8% upward the memory loses every non-empty pair. Overall 25 against 3 with 12 ties, p = 2.7·10⁻⁵, Spearman ρ = 0.405. This overturns the author\'s own first impression, formed by reading continuations one at a time, that the budget was too strict — the base drifts into repetition too, but the memory arm drifts further. The conclusion is that ΔPPL is a fair measure and the budget of +36.8% sits about where it should. The judge is one person, blind to the arm but not disinterested.',
     tableTitle: 'What it costs in hardware',
     colAxis: 'Axis',
     colValue: 'Measured value',
@@ -140,6 +155,21 @@ export const ordoM: Bilingual<typeof en> = {
     fig9Badge: 'Порог 79.9%',
     fig9Analysis:
       'Прозаический домен пригоден, и он труднее — это стоит проговорить, а не спрятать. База уже знает Kubernetes: 64.8% против 47.5% на кодовой библиотеке при разрыве логвероятностей +0.591 против −0.020. Значит на прозе вопрос перестаёт быть «может ли память принести знание, которого у модели нет», и становится «может ли она добавить к тому, что у модели уже есть», а порог фазы поднимается до 79.9%. Косвенная корзина там составляет 20.6% набора; поиск отвечает на неё в 94.9% случаев, а память по построению молчит — нет упоминания, нет адреса. Плечо памяти на этом домене ещё не прогонялось: этот график — планка, а не результат.',
+    fig10Title: 'Два домена: прибавка постоянна, планка — нет',
+    fig10Sub: 'Одно и то же правило фазы, применённое к кодовой библиотеке и к SDK протокола',
+    fig10Badge: 'Взят 1 из 2',
+    fig10Analysis:
+      'Свести оба домена в один график оказалось полезнее, чем разбирать каждый порознь. Прибавка памяти над базой держится в узкой полосе на двух совершенно разных источниках — 18.7 и 15.0 пункта, — тогда как планка, заданная как половина расстояния от базы до гибридного поиска, ходит вслед за тем, насколько удачно домен ищется. SDK ищется лучше (92.3% против 88.0%), поэтому его планка стоит на 3.4 пункта выше — ровно там, куда память не достаёт: 64.7% против 71.2%. Неприятное следствие стоит проговорить раньше, чем это сделает кто-то снаружи: правило «половина разрыва до поиска» наказывает за хорошо структурированный домен. Как критерий фазы оно не отменяется — его придумали, чтобы сравнивать память с альтернативой, а не с нулём, — но читать его надо как «догнала ли память поиск», а не как «приносит ли память знание». На второй вопрос ответ на обоих доменах твёрдое да.',
+    fig11Title: 'Закон покрытия переносится формой, но не наклоном',
+    fig11Sub: 'Прогноз записан до прогона; промах на обеих точках одного знака',
+    fig11Badge: 'Промах 7.3 и 8.6 пункта',
+    fig11Analysis:
+      'Прямая, подогнанная на первом домене, была использована для предсказания второго ещё до единого прогона — 72.0% и 76.1%. Измерено: 64.7% и 67.5%. Промах в семь раз больше ожидаемого шума, то есть это свойство, а не разброс. Устоял свободный член — он снова лёг на уровень базы (49.28 против 49.7); не устоял наклон, 0.364 против 0.539, площе в 1.48 раза. Форма зависимости переносится, крутизна нет, и это превращает вопрос о домене в арифметику: этому порогу соответствует покрытие 60.3%, а корпус даёт максимум 54.8%, значит никакой отбор внутри этого корпуса планку не возьмёт. Впервые предел назван до того, как в него упёрлись прогонами, — и оговорки столь же ясные: по одному зерну на точке, а наклон по двум точкам есть отрезок, а не прямая.',
+    fig12Title: 'Бюджет порчи, прочитанный человеком',
+    fig12Sub: '39 слепых пар на пяти уровнях порчи; приговоры записаны до открытия ключа',
+    fig12Badge: 'База 25, память 3, p = 2.7·10⁻⁵',
+    fig12Analysis:
+      'Перплексия — это зонд, а зонд может быть сколь угодно строгим. Поэтому продолжения читались вслепую, парами, с приговором, записанным до раскрытия плеча. Порча видна и растёт вместе с числом: при +39.6% половина пар неразличима, а с +96.8% и выше память проигрывает каждую непустую пару. Итого 25 против 3 при 12 равных, p = 2.7·10⁻⁵, Спирмен ρ = 0.405. Это опровергает первое впечатление самого автора, сложившееся при чтении продолжений по одному, что бюджет чрезмерно строг: база тоже уходит в повтор, но плечо памяти уходит дальше. Вывод — ΔPPL мера годная, а бюджет +36.8% стоит примерно там, где надо. Судья один, слепой к плечу, но не незаинтересованный.',
     tableTitle: 'Сколько это стоит в железе',
     colAxis: 'Ось',
     colValue: 'Измеренное значение',

@@ -107,7 +107,7 @@ COPY = {
         ],
         'stats': [
             ('0.0%', 'collateral damage, point edit', EMERALD),
-            ('68.1%', 'memory over the retrieval bar', CYAN),
+            ('1 of 2', 'domains clear the memory bar', CYAN),
             ('3 heads', 'cause of context collapse', VIOLET),
         ],
     },
@@ -119,7 +119,7 @@ COPY = {
         ],
         'stats': [
             ('0.0%', 'ущерба при точечной правке', EMERALD),
-            ('68.1%', 'память выше планки поиска', CYAN),
+            ('1 из 2', 'домена берут планку памяти', CYAN),
             ('3 головы', 'причина обвала контекста', VIOLET),
         ],
     },
