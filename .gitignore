@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Card-rendering fonts, fetched on demand (see tools/make-og-card.py)
+tools/fonts/
+
+# Local preview-server config
+.claude/

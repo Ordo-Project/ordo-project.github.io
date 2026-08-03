@@ -14,5 +14,13 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      // Two entry pages so each language has its own indexable URL and its own
+      // social card; both mount the same app.
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        ru: path.resolve(__dirname, 'ru/index.html'),
+      },
+    },
   },
 });

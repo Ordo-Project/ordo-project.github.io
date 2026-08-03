@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Preview crawlers need the card image and the page itself.
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+Sitemap: https://ordo-project.com/sitemap.xml

@@ -1,6 +1,7 @@
 import type { Language } from './types';
 import { nav } from './sections/nav';
 import { common } from './sections/common';
+import { meta } from './sections/meta';
 import { hero } from './sections/hero';
 import { ordoM } from './sections/ordoM';
 import { ordoGen } from './sections/ordoGen';
@@ -24,6 +25,7 @@ export const translations = {
   en: {
     nav: nav.en,
     common: common.en,
+    meta: meta.en,
     hero: hero.en,
     ordoM: ordoM.en,
     ordoGen: ordoGen.en,
@@ -37,6 +39,7 @@ export const translations = {
   ru: {
     nav: nav.ru,
     common: common.ru,
+    meta: meta.ru,
     hero: hero.ru,
     ordoM: ordoM.ru,
     ordoGen: ordoGen.ru,

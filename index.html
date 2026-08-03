@@ -2,24 +2,147 @@
 <html lang="en" class="dark scroll-smooth">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Icons -->
     <link rel="icon" href="./favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="./brand/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="./brand/favicon-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="./brand/apple-touch-icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ordo | Rewritable Memory &amp; Functional Context for Frozen LLMs</title>
-    <meta name="description" content="Ordo Research Project by Russel Gavery (@8hrsk). Ordo-M: a rewritable external value table on a frozen LLM with 0.0% collateral damage on point edits. OrdoGen: causal localization of the long-context retrieval bottleneck. Results, methods and negative results, in English and Russian." />
-    <meta name="keywords" content="LLM memory, frozen LLM, Ordo-M, OrdoGen, Russel Gavery, 8hrsk, context rot, functional context, knowledge editing, attention head ablation, retrieval heads, machine learning research" />
+    <meta name="theme-color" content="#08090C" />
+
+    <!-- Search -->
+    <title>Ordo Research Lab — Rewritable LLM Memory &amp; Long-Context Limits</title>
+    <meta
+      name="description"
+      content="Making a local LLM assistant that learns new documentation by diff, not retraining. Open results: rewritable memory (Ordo-M), long-context limits (OrdoGen)."
+    />
+    <meta name="author" content="Russel Gavery (Gavrilov Ruslan)" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="keywords" content="Ordo, Ordo-M, OrdoGen, LLM memory, frozen LLM, knowledge editing, model editing, long context, context rot, retrieval heads, attention head ablation, local LLM assistant, Russel Gavery, 8hrsk" />
     <link rel="canonical" href="https://ordo-project.com/" />
+    <link rel="alternate" hreflang="en" href="https://ordo-project.com/" />
+    <link rel="alternate" hreflang="ru" href="https://ordo-project.com/ru/" />
+    <link rel="alternate" hreflang="x-default" href="https://ordo-project.com/" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+
+    <!-- Open Graph: the card social platforms read -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Ordo Research Project" />
+    <meta property="og:site_name" content="Ordo Research Lab" />
     <meta property="og:url" content="https://ordo-project.com/" />
-    <meta property="og:title" content="Ordo | Rewritable Memory &amp; Functional Context for Frozen LLMs" />
-    <meta property="og:description" content="Two empirical research tracks on frozen LLMs: rewritable external memory (Ordo-M) and the long-context retrieval bottleneck (OrdoGen). Methods, measured results and published negative results." />
+    <meta property="og:title" content="Ordo — rewritable memory for frozen LLMs, and the limit of long context" />
+    <meta
+      property="og:description"
+      content="An independent lab building a local assistant that takes new documentation as a diff instead of retraining. Measured, published, negative results included: 0.0% collateral damage on a point edit, memory past the retrieval bar at 68.1%, long-context collapse traced to three attention heads."
+    />
     <meta property="og:image" content="https://ordo-project.com/brand/og-cover.png" />
+    <meta property="og:image:secure_url" content="https://ordo-project.com/brand/og-cover.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ordo Research Lab — rewritable memory for frozen LLMs, and the limit of long context" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ru_RU" />
+
+    <!-- X / Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@ordoproject" />
+    <meta name="twitter:creator" content="@ordoproject" />
+    <meta name="twitter:title" content="Ordo — rewritable memory for frozen LLMs" />
+    <meta
+      name="twitter:description"
+      content="Teaching a local model new documentation by diff instead of retraining, and measuring where long context actually stops working. Methods and numbers open, failures included."
+    />
     <meta name="twitter:image" content="https://ordo-project.com/brand/og-cover.png" />
+    <meta name="twitter:image:alt" content="Ordo Research Lab — rewritable memory for frozen LLMs, and the limit of long context" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "ResearchOrganization",
+            "@id": "https://ordo-project.com/#org",
+            "name": "Ordo Research Lab",
+            "alternateName": "Ordo",
+            "url": "https://ordo-project.com/",
+            "logo": "https://ordo-project.com/brand/ordo-mark-512.png",
+            "image": "https://ordo-project.com/brand/og-cover.png",
+            "description": "Independent research lab working on rewritable external memory for frozen language models (Ordo-M) and on the functional limits of long context (OrdoGen).",
+            "knowsAbout": [
+              "Large language models",
+              "Knowledge editing",
+              "External memory",
+              "Long-context retrieval",
+              "Mechanistic interpretability"
+            ],
+            "founder": { "@id": "https://ordo-project.com/#author" },
+            "sameAs": ["https://x.com/ordoproject", "https://github.com/8hrsk"]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://ordo-project.com/#author",
+            "name": "Russel Gavery",
+            "alternateName": "Gavrilov Ruslan",
+            "jobTitle": "Lead researcher",
+            "affiliation": { "@id": "https://ordo-project.com/#org" },
+            "sameAs": ["https://github.com/8hrsk", "https://x.com/ordoproject"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://ordo-project.com/#website",
+            "url": "https://ordo-project.com/",
+            "name": "Ordo Research Lab",
+            "inLanguage": ["en", "ru"],
+            "publisher": { "@id": "https://ordo-project.com/#org" }
+          },
+          {
+            "@type": "ResearchProject",
+            "@id": "https://ordo-project.com/#ordo-m",
+            "name": "Ordo-M",
+            "url": "https://ordo-project.com/#ordo-m",
+            "parentOrganization": { "@id": "https://ordo-project.com/#org" },
+            "description": "A rewritable external value table addressed from text and attached to a frozen language model, so documentation can be updated by diff instead of retraining. A point edit causes 0.0% collateral damage, against 8.4% for an equal-capacity LoRA."
+          },
+          {
+            "@type": "ResearchProject",
+            "@id": "https://ordo-project.com/#ordogen",
+            "name": "OrdoGen",
+            "url": "https://ordo-project.com/#ordogen",
+            "parentOrganization": { "@id": "https://ordo-project.com/#org" },
+            "description": "Measurement of why a nominal context window is not a functional one, localizing the retrieval collapse causally to three attention heads in a single late layer."
+          },
+          {
+            "@type": "ScholarlyArticle",
+            "@id": "https://ordo-project.com/#paper-ch1",
+            "headline": "Ordo-M, chapter 1: locality of a point edit",
+            "author": { "@id": "https://ordo-project.com/#author" },
+            "publisher": { "@id": "https://ordo-project.com/#org" },
+            "isAccessibleForFree": true,
+            "url": "https://ordo-project.com/#publications"
+          },
+          {
+            "@type": "ScholarlyArticle",
+            "@id": "https://ordo-project.com/#paper-ch2",
+            "headline": "Ordo-M, chapter 2: why raw text breaks",
+            "author": { "@id": "https://ordo-project.com/#author" },
+            "publisher": { "@id": "https://ordo-project.com/#org" },
+            "isAccessibleForFree": true,
+            "url": "https://ordo-project.com/#publications"
+          },
+          {
+            "@type": "ScholarlyArticle",
+            "@id": "https://ordo-project.com/#paper-ch3",
+            "headline": "Ordo-M, chapter 3: incrementality",
+            "author": { "@id": "https://ordo-project.com/#author" },
+            "publisher": { "@id": "https://ordo-project.com/#org" },
+            "isAccessibleForFree": true,
+            "url": "https://ordo-project.com/#publications"
+          }
+        ]
+      }
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,6 +151,36 @@
   </head>
   <body class="bg-[#08090C] text-[#F1F5F9] font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
     <div id="root"></div>
+    <!-- Text for crawlers that do not execute scripts; the app replaces nothing here. -->
+    <noscript>
+      <div style="max-width: 760px; margin: 0 auto; padding: 48px 24px; font-family: system-ui, sans-serif; line-height: 1.6">
+        <h1>Ordo Research Lab — rewritable memory for frozen LLMs, and the limit of long context</h1>
+        <p>
+          Ordo is an independent research lab led by Russel Gavery (Gavrilov Ruslan, @8hrsk). Its goal is a locally
+          hosted assistant that accepts a new version of a documentation set as a diff instead of being retrained, and
+          that is honest about how much of its context window actually works.
+        </p>
+        <h2>Ordo-M — rewritable external memory</h2>
+        <p>
+          A value table addressed from text is attached to a frozen model, leaving the base weights bit-identical. A
+          point edit causes 0.0% collateral damage, against 8.4% for an equal-capacity LoRA. On a real code domain the
+          memory has passed the bar it set for itself against retrieval, 68.1% against a 67.8% threshold, but only after
+          the corpus was rewritten into the form the questions ask about: fed raw documentation text it scores 54.1%,
+          and a deliberately wrong address scores the same as the right one.
+        </p>
+        <h2>OrdoGen — the functional limit of long context</h2>
+        <p>
+          Within a small model's native position limit, literal retrieval falls from 70/70 at 16K tokens to 56/70 at
+          32K, and at 128K both plain prompts and the best prompt-level intervention score 0/15. The failure is
+          localized causally to three attention heads in a single late layer.
+        </p>
+        <p>
+          Methods, measurements and negative results are published in English and Russian; source code and evaluation
+          harnesses are closed. See <a href="https://x.com/ordoproject">@ordoproject</a> and
+          <a href="https://github.com/8hrsk">github.com/8hrsk</a>.
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
