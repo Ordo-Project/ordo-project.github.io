@@ -16,6 +16,18 @@ export const SOCIAL = {
   x: { url: 'https://x.com/ordoproject', handle: '@ordoproject' },
 } as const;
 
+/** The Ordo mark, lifted from the logo artwork: glyph only, no wordmark, transparent. */
+export const OrdoMark: React.FC<{ className?: string }> = ({ className }) => (
+  <img
+    src={`${import.meta.env.BASE_URL}brand/ordo-mark-512.png`}
+    alt="Ordo"
+    width={512}
+    height={512}
+    className={className}
+    draggable={false}
+  />
+);
+
 /** lucide has no X mark, so the brand glyph is inlined. */
 export const XIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" className={className}>

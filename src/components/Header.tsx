@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert, FileText } from 'lucide-react';
 import { Language, translations } from '../i18n';
-import { SOCIAL, XIcon } from './ui';
+import { SOCIAL, XIcon, OrdoMark } from './ui';
 
 interface HeaderProps {
   activeTab: string;
@@ -58,8 +58,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
             onClick={() => handleNavClick('overview')}
             className="flex items-center space-x-3 cursor-pointer min-w-0 group"
           >
-            <div className="w-9 h-9 rounded-lg bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:border-cyan-400 transition-all shadow-md">
-              <Cpu className="w-4 h-4 text-cyan-400 group-hover:scale-105 transition-transform" />
+            <div className="w-9 h-9 shrink-0 flex items-center justify-center">
+              <OrdoMark className="w-9 h-9 opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all" />
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center space-x-2">

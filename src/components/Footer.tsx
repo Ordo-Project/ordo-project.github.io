@@ -1,7 +1,7 @@
 import React from 'react';
-import { Cpu, Github, ShieldCheck } from 'lucide-react';
+import { Github, ShieldCheck } from 'lucide-react';
 import { Language, translations } from '../i18n';
-import { SOCIAL, XIcon } from './ui';
+import { SOCIAL, XIcon, OrdoMark } from './ui';
 
 interface FooterProps {
   lang: Language;
@@ -16,8 +16,8 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Brand */}
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-lg bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-              <Cpu className="w-4 h-4" />
+            <div className="w-8 h-8 shrink-0 flex items-center justify-center">
+              <OrdoMark className="w-8 h-8 opacity-90" />
             </div>
             <div>
               <div className="font-bold text-white text-sm font-mono tracking-tight">ORDO RESEARCH</div>

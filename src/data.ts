@@ -47,21 +47,87 @@ export const gainData = (lang: Language) =>
   gainRaw.map((r) => ({ setup: r.setup[lang], wave0: r.wave0, late: r.late, ppl: r.ppl }));
 
 // ---------------------------------------------------------------------------
-// Ordo-M — first real domain: answer quality by arm (183 questions)
+// Ordo-M — the code domain, M1: every arm on the same 183 questions
+// The oracle ceiling is the corrected one: chapter 12 assembled the oracle context
+// from the wrong record of the address, which understated it (90.2 -> 92.3).
 // ---------------------------------------------------------------------------
 const domainRaw = [
   { arm: L('Base, no context', 'База без контекста'), prefer: 47.5, kind: 'base' },
+  { arm: L('Memory, raw doc text', 'Память, сырой текст'), prefer: 54.1, kind: 'memory-fail' },
+  { arm: L('Memory, prepared corpus', 'Память, подготовленный корпус'), prefer: 68.1, kind: 'memory' },
   { arm: L('Lexical search', 'Лексический поиск'), prefer: 85.8, kind: 'rag' },
-  { arm: L('Local embeddings', 'Локальные эмбеддинги'), prefer: 85.2, kind: 'rag' },
-  { arm: L('API embeddings', 'API-эмбеддинги'), prefer: 86.3, kind: 'rag' },
   { arm: L('Hybrid (fusion)', 'Гибрид (fusion)'), prefer: 88.0, kind: 'rag' },
-  { arm: L('Oracle context', 'Оракульный контекст'), prefer: 90.2, kind: 'ceiling' },
+  { arm: L('Oracle context', 'Оракульный контекст'), prefer: 92.3, kind: 'ceiling' },
 ];
 
 export const domainArmData = (lang: Language) =>
   domainRaw.map((r) => ({ arm: r.arm[lang], prefer: r.prefer, kind: r.kind }));
 
 export const MEMORY_THRESHOLD = 67.8;
+
+// ---------------------------------------------------------------------------
+// Ordo-M — what the corpus is made of decides the outcome, not the carrier
+// ---------------------------------------------------------------------------
+const corpusFormRaw = [
+  { form: L('Raw text', 'Сырой текст'), knowledge: 54.1, ppl: 2.4, coverage: null as number | null },
+  { form: L('Base-written', 'Написан базой'), knowledge: 54.6, ppl: 169.8, coverage: 21.3 },
+  { form: L('Prepared +dist.', 'Подгот. +дист.'), knowledge: 67.0, ppl: 52.4, coverage: 49.7 },
+  { form: L('Prepared', 'Подготовленный'), knowledge: 68.1, ppl: 80.0, coverage: 49.7 },
+];
+
+export const corpusFormData = (lang: Language) =>
+  corpusFormRaw.map((r) => ({ form: r.form[lang], knowledge: r.knowledge, ppl: r.ppl, coverage: r.coverage }));
+
+// ---------------------------------------------------------------------------
+// Ordo-M — coverage predicts knowledge: knowledge = 49.14 + 0.539 * coverage
+// ---------------------------------------------------------------------------
+export const COVERAGE_LAW = { intercept: 49.14, slope: 0.539, r2: 0.996, need: 34.6 };
+
+/** Four measured points across two corpora, plus the fitted line for the same x. */
+export const coverageLawData = [
+  { coverage: 16.4, knowledge: 58.5, facts: '1' },
+  { coverage: 21.9, knowledge: 60.9, facts: 'own' },
+  { coverage: 26.8, knowledge: 63.9, facts: '2' },
+  { coverage: 38.3, knowledge: 69.4, facts: '4' },
+  { coverage: 49.7, knowledge: 65.0, facts: 'all' },
+].map((p) => ({ ...p, fit: +(COVERAGE_LAW.intercept + COVERAGE_LAW.slope * p.coverage).toFixed(1) }));
+
+// ---------------------------------------------------------------------------
+// Ordo-M — output gain: knowledge is flat above the knee, text damage is not
+// ---------------------------------------------------------------------------
+export const gainCurveData = [
+  { gain: 25, knowledge: 60.5, ppl: 1.2, prose: 0.2 },
+  { gain: 50, knowledge: 67.9, ppl: 22.6, prose: 3.1 },
+  { gain: 60, knowledge: 67.8, ppl: 29.8, prose: 3.7 },
+  { gain: 75, knowledge: 70.5, ppl: 52.9, prose: null as number | null },
+  { gain: 100, knowledge: 68.9, ppl: 81.8, prose: 6.4 },
+];
+
+export const GAIN_KNEE = 50;
+
+// ---------------------------------------------------------------------------
+// Ordo-M — prose: a page is addressable, a section is not
+// ---------------------------------------------------------------------------
+const proseAddressRaw = [
+  { set: L('Prose domain, 378 questions', 'Прозаический домен, 378 вопросов'), page: 95.0, section: 9.0 },
+  { set: L('Prose domain, 189 questions', 'Прозаический домен, 189 вопросов'), page: 96.9, section: 9.3 },
+];
+
+export const proseAddressData = (lang: Language) =>
+  proseAddressRaw.map((r) => ({ set: r.set[lang], page: r.page, section: r.section }));
+
+/** The prose bar is set in a different bucket: the base already knows Kubernetes. */
+const proseArmRaw = [
+  { arm: L('Base, no context', 'База без контекста'), prefer: 64.8, kind: 'base' },
+  { arm: L('Lexical search', 'Лексический поиск'), prefer: 92.9, kind: 'rag' },
+  { arm: L('Hybrid (fusion)', 'Гибрид (fusion)'), prefer: 95.0, kind: 'rag' },
+  { arm: L('Oracle context', 'Оракульный контекст'), prefer: 96.6, kind: 'ceiling' },
+];
+
+export const proseArmData = (lang: Language) =>
+  proseArmRaw.map((r) => ({ arm: r.arm[lang], prefer: r.prefer, kind: r.kind }));
+
+export const PROSE_THRESHOLD = 79.9;
 
 // ---------------------------------------------------------------------------
 // Ordo-M — retriever comparison, recall@1 on the same questions
@@ -72,7 +138,8 @@ const retrieverRaw = [
   { name: L('Local embeddings', 'Локальные эмбеддинги'), recall: 68.3, own: false },
   { name: L('API embeddings', 'API-эмбеддинги'), recall: 69.9, own: false },
   { name: L('Hybrid (fusion)', 'Гибрид (fusion)'), recall: 72.7, own: false },
-  { name: L('Ordo-M, longest-mention rule', 'Ordo-M, правило «самое длинное»'), recall: 79.1, own: true },
+  { name: L('Ordo-M, longest-mention rule', 'Ordo-M, правило «самое длинное»'), recall: 74.3, own: true },
+  { name: L('Ordo-M, collisions split by content', 'Ordo-M, коллизии разведены содержимым'), recall: 82.0, own: true },
 ];
 
 export const retrieverData = (lang: Language) =>
@@ -340,6 +407,167 @@ export const papers: Paper[] = [
     limit: L(
       'The memory arm itself is not measured. The domain is 96% code symbols and says nothing about prose. Question defect rate is known only as a range, 0.8% to 25.6%, and the indirect-question bucket is too small to conclude anything.',
       'Само плечо памяти не замерено. Домен на 96% состоит из символов кода и ничего не говорит про прозу. Доля брака в вопросах известна только вилкой 0.8%–25.6%, а корзина косвенных вопросов слишком мала для выводов.'
+    ),
+  },
+  {
+    id: 'memory-vs-rag',
+    project: 'Ordo-M',
+    date: '2026-08-02',
+    tags: ['m1', 'rag', 'домен', 'провал'],
+    title: L('Memory against context: the phase is not passed', 'Память против контекста: фаза не пройдена'),
+    summary: L(
+      'The memory arm on a real domain, and a negative result with a precise cause.',
+      'Плечо памяти на настоящем домене и отрицательный результат с точно названной причиной.'
+    ),
+    setup: L(
+      'The same 825 records and the same 183 questions as the retrieval arms, memory trained on the raw documentation text, everything else held fixed.',
+      'Те же 825 записей и те же 183 вопроса, что и у поисковых плеч, память обучена на сыром тексте документации, всё остальное зафиксировано.'
+    ),
+    result: L(
+      '54.1% against a 67.8% threshold and 88.0% for hybrid retrieval — the memory takes 5.5 of the 40.4 points a retrieved record takes. Undertraining, addressing and a 10.1% ingestion defect were each measured and cleared. On held-out tails the memory does not predict even the continuation of its own record (83.3% against 84.5%).',
+      '54.1% при пороге 67.8% и 88.0% у гибридного поиска — память забирает 5.5 пункта из 40.4, которые забирает найденная запись. Недоучивание, адресация и дефект закачки на 10.1% измерены и отброшены. На удержанных хвостах память не предсказывает даже продолжение собственной записи (83.3% против 84.5%).'
+    ),
+    limit: L(
+      'The failure is of the pairing "raw text → memory", not of the mechanism. Everything proved about editing and locality still holds.',
+      'Провалилась связка «сырой текст → память», а не механизм. Всё доказанное про правку и локальность остаётся в силе.'
+    ),
+  },
+  {
+    id: 'prepared-corpus',
+    project: 'Ordo-M',
+    date: '2026-08-02',
+    tags: ['corpus', 'm1', 'корпус', 'порог'],
+    title: L('The prepared corpus takes the bar', 'Подготовленный корпус берёт планку'),
+    summary: L(
+      'Put in the form that is asked for, and the same records clear the threshold.',
+      'Положить ту форму, которую спрашивают, — и те же записи берут порог.'
+    ),
+    setup: L(
+      'Each record is turned into atomic facts in the shape the questions use; a second phrasing of every question is held out of training and used to check generalization.',
+      'Каждая запись превращается в атомарные факты в той форме, которой пользуются вопросы; вторая формулировка каждого вопроса удерживается вне обучения и служит проверкой обобщения.'
+    ),
+    result: L(
+      '68.1% ± 1.38 across three seeds against a 67.8% threshold: +15.3 points over the raw text and +20.2 over the base, p ≤ 0.0001. A deliberately foreign address now returns exactly the base level (p = 0.56), so the content of the record decides. Generalization to an unseen phrasing is 87.8% against 57.8%, and up to six facts per address show no crowding.',
+      '68.1% ± 1.38 на трёх зёрнах при пороге 67.8%: +15.3 пункта к сырому тексту и +20.2 к базе, p ≤ 0.0001. Заведомо чужой адрес теперь возвращает ровно уровень базы (p = 0.56), значит решает содержимое записи. Обобщение на невиданную формулировку 87.8% против 57.8%, и до шести фактов на адрес вытеснения нет.'
+    ),
+    limit: L(
+      'Reached by 0.3 points at a spread of 1.38 — not a significant excess. The corpus was written by an external model, and the cost in text damage is the largest open number.',
+      'Взят с запасом 0.3 пункта при разбросе 1.38 — значимого превышения нет. Корпус написан внешней моделью, а цена в порче текста — крупнейшая открытая величина.'
+    ),
+  },
+  {
+    id: 'own-teacher',
+    project: 'Ordo-M',
+    date: '2026-08-03',
+    tags: ['local model', 'distillation', 'локальная модель', 'дистилляция'],
+    title: L('Its own teacher: what a local model can and cannot do', 'Свой учитель: что локальная модель может и чего не может'),
+    summary: L(
+      'The frozen base writes its own corpus, and two surprises come out of it.',
+      'Замороженная база пишет собственный корпус, и из этого выходят две неожиданности.'
+    ),
+    setup: L(
+      'The same preparation prompt that was given to an external model is given to the frozen base itself — the one model a client is guaranteed to have. Separately, context distillation against a teacher that has the record in context.',
+      'Тот же промпт подготовки, что подавался внешней модели, подаётся самой замороженной базе — единственной модели, которая у клиента точно есть. Отдельно — контекстная дистилляция от учителя, у которого запись лежит в контексте.'
+    ),
+    result: L(
+      'The self-written corpus is indistinguishable from raw text: 54.6% against 53.6%, p = 0.88. The form is flawless (2 malformed JSON out of 825) and the facts are absorbed (80.0% on a second phrasing against 49.5%), but coverage of what gets asked is half — 21.3% against 49.7%. Distillation adds no knowledge (67.0% ± 3.72 against 68.7% ± 0.32) and instead cuts text damage by 43% with six times less spread.',
+      'Самописный корпус неотличим от сырого текста: 54.6% против 53.6%, p = 0.88. Форма безупречна (2 несобравшихся JSON из 825), факты впитаны (80.0% на второй формулировке против 49.5%), но покрытие того, о чём спрашивают, вдвое ниже — 21.3% против 49.7%. Дистилляция знания не добавляет (67.0% ± 3.72 против 68.7% ± 0.32) и вместо этого срезает порчу текста на 43% при вшестеро меньшем разбросе.'
+    ),
+    limit: L(
+      'A local model can write facts and cannot choose which ones. That single gap is what stands between the measured result and the product promise.',
+      'Локальная модель умеет писать факты и не умеет выбирать, о чём. Ровно этот разрыв и стоит между измеренным результатом и продуктовым обещанием.'
+    ),
+  },
+  {
+    id: 'coverage-law',
+    project: 'Ordo-M',
+    date: '2026-08-03',
+    tags: ['coverage', 'law', 'покрытие', 'закон'],
+    title: L('Coverage predicts knowledge, and selection cannot fix a corpus', 'Покрытие предсказывает знание, а отбор корпус не чинит'),
+    summary: L(
+      'The misses of a local generator taken apart one by one, with no rented GPU at all.',
+      'Промахи локального генератора разобраны поштучно, без единой минуты аренды.'
+    ),
+    setup: L(
+      'Every coverage miss classified by hand against the question set; four measured points across two corpora fitted against the share of questions whose fact appears anywhere in the corpus.',
+      'Каждый промах покрытия размечен вручную против набора вопросов; четыре измеренные точки на двух корпусах подогнаны против доли вопросов, чей факт вообще присутствует в корпусе.'
+    ),
+    result: L(
+      'Knowledge = 49.14 + 0.539 × coverage, R² = 0.996, with the intercept exactly at the base level. A corpus therefore needs 34.6% coverage to clear the bar, and that is a laptop computation. The sort "what this thing does" is 52.9% of the local model\'s facts against 2.2% of the questions. Reordering is worth +3.8 points on the weak corpus and exactly zero on the strong one.',
+      'Знание = 49.14 + 0.539 × покрытие, R² = 0.996, свободный член ровно на уровне базы. Значит корпусу нужно покрытие 34.6%, чтобы взять планку, и это вычисление на ноутбуке. Сорт «что эта штука делает» занимает 52.9% фактов локальной модели против 2.2% вопросов. Переупорядочивание стоит +3.8 пункта на слабом корпусе и ровно ноль на сильном.'
+    ),
+    limit: L(
+      'Four points, two corpora. The law is a working tool rather than a proven relation, and selection is closed because its ceiling is the coverage of the source (21.9%).',
+      'Четыре точки, два корпуса. Закон — рабочий инструмент, а не доказанное соотношение, а отбор закрыт, потому что его потолок равен покрытию исходника (21.9%).'
+    ),
+  },
+  {
+    id: 'prose-domain',
+    project: 'Ordo-M',
+    date: '2026-08-03',
+    tags: ['prose', 'addressing', 'проза', 'адресация'],
+    title: L('Prose is addressable by page, not by section', 'Проза адресуется страницей, а не разделом'),
+    summary: L(
+      'Eleven prose corpora screened against the acceptance metric, and the address redefined.',
+      'Одиннадцать прозаических корпусов проверены приёмочной метрикой, и адрес переопределён.'
+    ),
+    setup: L(
+      'The acceptance metric is the share of addresses whose record names itself in its own text. Two question sets of 378 and 189 items built by the same pipeline as the code domain.',
+      'Приёмочная метрика — доля адресов, чья запись называет себя внутри собственного текста. Два набора вопросов на 378 и 189 пунктов, построенные тем же трактом, что и кодовый домен.'
+    ),
+    result: L(
+      'By sections not one corpus clears the 60% bar — the best is 59.4% and a real corporate handbook gives 18.1%, with identical named failures everywhere: "Overview", "What\'s next", "Introduction". By page, eight of eleven pass, and the page address lands in the right record for 95.0% and 96.9% of direct questions against 9.0% and 9.3% for sections. A section leads into a foreign record for 85.7% of questions rather than staying silent.',
+      'По разделам порог 60% не берёт ни один корпус — лучшее 59.4%, а настоящий корпоративный хендбук даёт 18.1%, причём провалы всюду одинаковы и названы поимённо: «Overview», «What\'s next», «Introduction». По страницам проходят восемь из одиннадцати, и адрес страницы попадает в нужную запись у 95.0% и 96.9% прямых вопросов против 9.0% и 9.3% по разделам. Раздел при этом не молчит, а ведёт в чужую запись у 85.7% вопросов.'
+    ),
+    limit: L(
+      'The price is 12.5 records per address instead of 1.9 and an indirect bucket growing from 6.0% to 20.6%. On the chosen prose domain the base already knows the material, so the bar sits higher (79.9%) and measures addition rather than acquisition.',
+      'Цена — 12.5 записей на адрес вместо 1.9 и рост косвенной корзины с 6.0% до 20.6%. На выбранном прозаическом домене база материал уже знает, поэтому планка стоит выше (79.9%) и меряет добавление, а не приобретение.'
+    ),
+  },
+  {
+    id: 'levers-and-gain',
+    project: 'Ordo-M',
+    date: '2026-08-03',
+    tags: ['gain', 'distillation', 'громкость', 'оракул'],
+    title: L('Two levers turn out to be one, and the oracle had been understated', 'Рычагов оказалось не два, а один, и оракул был занижен'),
+    summary: L(
+      'The text cost falls fourfold, gain is exhausted as a lever, and a ceiling that looked tautological was wrong.',
+      'Цена текста падает вчетверо, громкость исчерпана как рычаг, а потолок, казавшийся тавтологией, оказался неверным.'
+    ),
+    setup: L(
+      'Distillation and reduced gain compared at matched text damage; then a gain sweep on the real domain with three seeds per point.',
+      'Дистилляция и пониженная громкость сравниваются при равной порче текста; затем перебор громкости на настоящем домене по три зерна на точку.'
+    ),
+    result: L(
+      'At equal damage both give the same knowledge, 68.3%, with slopes matching to the third decimal — they do not add, and combined they are worse than either alone. The working point now holds 67.9% ± 1.67 at +22.5% perplexity against +81.8% before. Above the knee knowledge does not depend on gain at all while damage moves fourfold. Separately: the oracle context was assembled from the wrong record of its address, understating the retrieval ceiling — 90.2% → 92.3% on code, 80.2% → 96.6% on prose.',
+      'При равной порче оба дают одно и то же знание, 68.3%, с наклонами, совпадающими до третьего знака, — они не складываются, а вместе хуже каждого порознь. Рабочая точка теперь держит 67.9% ± 1.67 при +22.5% перплексии против +81.8% прежде. Выше колена знание от громкости не зависит вовсе, тогда как порча меняется вчетверо. Отдельно: оракульный контекст собирался не из той записи своего адреса, из-за чего потолок поиска был занижен — 90.2% → 92.3% на коде, 80.2% → 96.6% на прозе.'
+    ),
+    limit: L(
+      'The middle of an earlier trade-off curve did not reproduce, so the shape that suggested "knowledge saturates, damage does not" was a measurement error. Only its bottom held.',
+      'Середина более ранней кривой размена не воспроизвелась, поэтому форма, наводившая на «знание насыщается, порча нет», была ошибкой измерения. Устоял только её низ.'
+    ),
+  },
+  {
+    id: 'capacity-not-corpus',
+    project: 'Ordo-M',
+    date: '2026-08-03',
+    tags: ['capacity', 'routing', 'ёмкость', 'маршрутизация'],
+    title: L('Capacity, not corpus: sub-addressing closed by an exact balance', 'Ёмкость, а не корпус: подадресование закрыто точным балансом'),
+    summary: L(
+      'The corpus that would clear the bar already exists; what blocks it is the capacity of one address.',
+      'Корпус, который взял бы планку, уже существует; мешает ему ёмкость одного адреса.'
+    ),
+    setup: L(
+      'Six symbolic schemes that split an address by the sort of question, measured entirely on a laptop, with the scheme chosen on a tuning half and read on a reporting half.',
+      'Шесть символьных схем, дробящих адрес по сорту вопроса, замерены целиком на ноутбуке: схема выбиралась по настроечной половине, итог читается по отчётной.'
+    ),
+    result: L(
+      'The best scheme gives 40.7% coverage against 37.4% for the baseline, inside the pre-registered band of refusal and not distinguishable from it (p = 0.51). Splitting makes +10.3 points of coverage available and the instability of the reading rule takes precisely as much back. Stability under paraphrase predicts it exactly: only the one scheme above 80% failed to lose. The remaining axis is the width of the slot, and it has never been varied on a real domain.',
+      'Лучшая схема даёт покрытие 40.7% против 37.4% у опоры — внутри заранее зарегистрированной полосы отказа и неотличимо от неё (p = 0.51). Дробление делает доступными +10.3 пункта покрытия, и нестабильность читающей разметки забирает ровно столько же. Устойчивость при пересказе предсказывает это точно: не проиграла лишь та единственная схема, что взяла порог 80%. Остающаяся ось — ширина слота, и на настоящем домене её не поворачивали ни разу.'
+    ),
+    limit: L(
+      'A symbolic router over the content of a question is impossible where a symbolic router over the name works: a name survives paraphrase, the sort of question does not. The axis is closed by nature rather than by arithmetic.',
+      'Символьный маршрутизатор по содержанию вопроса невозможен там, где работает символьный маршрутизатор по имени: имя при пересказе выживает, сорт вопроса — нет. Ось закрыта природой, а не арифметикой.'
     ),
   },
   {
