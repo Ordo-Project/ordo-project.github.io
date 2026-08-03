@@ -1,6 +1,7 @@
 import React from 'react';
 import { User, Github, Sparkles, ExternalLink, ShieldCheck, Cpu, Terminal } from 'lucide-react';
 import { Language, translations } from '../i18n';
+import { SOCIAL, XIcon } from './ui';
 
 interface AboutSectionProps {
   lang: Language;
@@ -45,7 +46,17 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                   className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#08090C] hover:bg-[#161922] text-[#8A94A6] hover:text-white border border-[#1E2330] text-xs font-mono transition-all"
                 >
                   <Github className="w-4 h-4 text-cyan-400" />
-                  <span>@8hrsk</span>
+                  <span>{SOCIAL.github.handle}</span>
+                  <ExternalLink className="w-3 h-3 opacity-60" />
+                </a>
+                <a
+                  href={SOCIAL.x.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#08090C] hover:bg-[#161922] text-[#8A94A6] hover:text-white border border-[#1E2330] text-xs font-mono transition-all"
+                >
+                  <XIcon className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>{SOCIAL.x.handle}</span>
                   <ExternalLink className="w-3 h-3 opacity-60" />
                 </a>
               </div>

@@ -10,6 +10,19 @@ export const TOOLTIP_STYLE = {
 } as const;
 export const LEGEND_STYLE = { fontSize: '10px', paddingTop: '8px' } as const;
 
+/** Project links, so the handle lives in one place. */
+export const SOCIAL = {
+  github: { url: 'https://github.com/8hrsk', handle: '@8hrsk' },
+  x: { url: 'https://x.com/ordoproject', handle: '@ordoproject' },
+} as const;
+
+/** lucide has no X mark, so the brand glyph is inlined. */
+export const XIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor" className={className}>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
 interface SectionHeaderProps {
   index: string;
   tag: string;

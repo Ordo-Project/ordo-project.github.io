@@ -11,7 +11,8 @@ interface PublicationsSectionProps {
 
 export const PublicationsSection: React.FC<PublicationsSectionProps> = ({ lang }) => {
   const t = translations[lang].publications;
-  const [openId, setOpenId] = useState<string | null>(publications[0]?.id ?? null);
+  // With several reports listed, the section opens as an index rather than a wall of text.
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const open = publications.find((p) => p.id === openId) ?? null;
   const sections = useMemo(() => (open ? paperSections(open, lang) : []), [open, lang]);

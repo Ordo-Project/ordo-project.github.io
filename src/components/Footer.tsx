@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cpu, Github, ShieldCheck } from 'lucide-react';
 import { Language, translations } from '../i18n';
+import { SOCIAL, XIcon } from './ui';
 
 interface FooterProps {
   lang: Language;
@@ -25,7 +26,7 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
           </div>
 
           {/* Social Links */}
-          <div className="flex items-center space-x-6 text-xs text-[#8A94A6] font-mono">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#8A94A6] font-mono">
             <a
               href="https://github.com/8hrsk"
               target="_blank"
@@ -33,9 +34,18 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
               className="hover:text-cyan-300 flex items-center space-x-1.5 transition-colors"
             >
               <Github className="w-4 h-4 text-cyan-400" />
-              <span>@8hrsk</span>
+              <span>{SOCIAL.github.handle}</span>
             </a>
-            <span className="text-[#1E2330]">|</span>
+            <a
+              href={SOCIAL.x.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-cyan-300 flex items-center space-x-1.5 transition-colors"
+            >
+              <XIcon className="w-3.5 h-3.5 text-cyan-400" />
+              <span>{SOCIAL.x.handle}</span>
+            </a>
+            <span className="text-[#1E2330] hidden sm:inline">|</span>
             <div className="flex items-center space-x-1 text-slate-400 text-[11px]">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>{t.host}</span>

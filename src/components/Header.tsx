@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert, FileText } from 'lucide-react';
 import { Language, translations } from '../i18n';
+import { SOCIAL, XIcon } from './ui';
 
 interface HeaderProps {
   activeTab: string;
@@ -109,6 +110,17 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
               <span>{lang.toUpperCase()}</span>
             </button>
 
+            {/* X Profile Button */}
+            <a
+              href={SOCIAL.x.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+            >
+              <XIcon className="w-3 h-3 text-cyan-400" />
+              <span>{SOCIAL.x.handle}</span>
+            </a>
+
             {/* GitHub Profile Button */}
             <a
               href="https://github.com/8hrsk"
@@ -169,7 +181,16 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
               className="flex items-center justify-center space-x-2 w-full py-2.5 rounded-lg bg-[#0F1117] text-white text-xs font-mono border border-[#1E2330]"
             >
               <Github className="w-4 h-4 text-cyan-400" />
-              <span>GitHub / @8hrsk</span>
+              <span>GitHub / {SOCIAL.github.handle}</span>
+            </a>
+            <a
+              href={SOCIAL.x.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 flex items-center justify-center space-x-2 w-full py-2.5 rounded-lg bg-[#0F1117] text-white text-xs font-mono border border-[#1E2330]"
+            >
+              <XIcon className="w-3.5 h-3.5 text-cyan-400" />
+              <span>X / {SOCIAL.x.handle}</span>
             </a>
           </div>
         </div>
