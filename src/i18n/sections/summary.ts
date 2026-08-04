@@ -31,7 +31,7 @@ const en = {
       'The second track, OrdoGen, measures where a long context window stops working, so nobody buys capacity that does not function.',
     ],
 
-    valueTitle: 'Who gains, and how',
+    valueTitle: 'Where the memory can live, and who gains',
     values: [
       {
         who: 'Companies running assistants on their own hardware',
@@ -41,12 +41,7 @@ const en = {
       {
         who: 'AI product and agent vendors',
         gain: 'Ship knowledge updates separately from the model',
-        detail: 'A coding agent such as Claude Code could carry current knowledge of popular libraries in the model itself, refreshed on the library’s release schedule, instead of asking every customer to run retrieval or MCP servers on their side.',
-      },
-      {
-        who: 'Teams already paying for retrieval',
-        gain: 'A smaller bill and a shorter prompt',
-        detail: 'Knowledge read from memory does not have to be pasted into every prompt, which removes both the token cost and the failure mode where the right passage is in the window and the model still misses it.',
+        detail: 'The memory sits next to the model on the vendor’s own serving stack. A coding agent such as Claude Code could carry current knowledge of popular libraries in the model itself, refreshed on the library’s release schedule, instead of asking every customer to run retrieval or MCP servers on their side.',
       },
     ],
 
@@ -92,7 +87,7 @@ export const summary: Bilingual<typeof en> = {
       'Второй трек, OrdoGen, измеряет, где длинное окно контекста перестаёт работать, — чтобы не покупать ёмкость, которая не функционирует.',
     ],
 
-    valueTitle: 'Кому и что это даёт',
+    valueTitle: 'Где память может стоять и кому это даёт выгоду',
     values: [
       {
         who: 'Компаниям с ассистентом на своём железе',
@@ -102,12 +97,7 @@ export const summary: Bilingual<typeof en> = {
       {
         who: 'Вендорам AI-продуктов и агентов',
         gain: 'Поставлять обновления знаний отдельно от модели',
-        detail: 'Кодовый агент вроде Claude Code мог бы нести актуальное знание популярных библиотек в самой модели, обновляемое по графику релизов этих библиотек, вместо того чтобы просить каждого клиента поднимать у себя RAG или MCP-сервер.',
-      },
-      {
-        who: 'Командам, уже платящим за поиск',
-        gain: 'Меньше счёт и короче промпт',
-        detail: 'Знание, прочитанное из памяти, не нужно вклеивать в каждый промпт: уходит и стоимость токенов, и отказ, при котором нужный фрагмент лежит в окне, а модель его всё равно не видит.',
+        detail: 'Память стоит рядом с моделью, на собственном стенде вендора. Кодовый агент вроде Claude Code мог бы нести актуальное знание популярных библиотек в самой модели, обновляемое по графику релизов этих библиотек, вместо того чтобы просить каждого клиента поднимать у себя RAG или MCP-сервер.',
       },
     ],
 

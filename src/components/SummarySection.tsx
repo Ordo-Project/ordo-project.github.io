@@ -6,7 +6,6 @@ import {
   Check,
   Building2,
   Bot,
-  Wallet,
   Mail,
   Github,
   ExternalLink,
@@ -19,8 +18,9 @@ interface SummarySectionProps {
   lang: Language;
 }
 
-/** Icons per value row, in the order the copy declares them. */
-const VALUE_ICONS = [Building2, Bot, Wallet];
+/** Icons per value row, in the order the copy declares them: the two places the
+ *  memory can physically live — the company's own hardware, or the vendor's. */
+const VALUE_ICONS = [Building2, Bot];
 
 export const SummarySection: React.FC<SummarySectionProps> = ({ lang }) => {
   const t = translations[lang].summary;
@@ -85,7 +85,7 @@ export const SummarySection: React.FC<SummarySectionProps> = ({ lang }) => {
 
         {/* Value per audience */}
         <h3 className="mt-12 text-xs font-mono uppercase tracking-wider text-emerald-400">{t.valueTitle}</h3>
-        <div className="mt-4 grid md:grid-cols-3 gap-4">
+        <div className="mt-4 grid md:grid-cols-2 gap-4">
           {t.values.map((v, i) => {
             const Icon = VALUE_ICONS[i] ?? Building2;
             return (
