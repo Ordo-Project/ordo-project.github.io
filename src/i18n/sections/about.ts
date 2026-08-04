@@ -12,7 +12,7 @@ const en = {
     card3Title: 'Method',
     card3Text: 'Paired designs, evaluation sets frozen before the primary run, matched control arms, and negative results published with the positive ones.',
     contactTitle: 'Collaboration',
-    contactText: 'Joint runs, replication and review of evaluation logs are welcome. Contact through the GitHub profile.',
+    contactText: 'Joint runs, replication and review of evaluation logs are welcome. Write to founder@ordo-project.com, or open an issue on the project organisation.',
   };
 
 /** RU is typed against EN, so a missing or renamed key fails the build. */
@@ -30,6 +30,6 @@ export const about: Bilingual<typeof en> = {
     card3Title: 'Метод',
     card3Text: 'Парные дизайны, замороженные до основного прогона наборы замеров, согласованные контрольные плечи и отрицательные результаты, публикуемые наравне с положительными.',
     contactTitle: 'Сотрудничество',
-    contactText: 'Совместные прогоны, репликация и разбор логов замеров приветствуются. Связь — через профиль на GitHub.',
+    contactText: 'Совместные прогоны, репликация и разбор логов замеров приветствуются. Пишите на founder@ordo-project.com или заводите issue в организации проекта.',
   },
 };

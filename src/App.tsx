@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
+import { SummarySection } from './components/SummarySection';
 import { OrdoMSection } from './components/OrdoMSection';
 import { OrdoGenSection } from './components/OrdoGenSection';
 import { TimelineSection } from './components/TimelineSection';
@@ -66,11 +67,13 @@ export const App: React.FC = () => {
       <Header activeTab={activeTab} setActiveTab={setActiveTab} lang={lang} setLang={setLang} />
       <main>
         <HeroSection
+          onExploreSummary={() => scrollToSection('summary')}
           onExploreOrdoM={() => scrollToSection('ordo-m')}
           onExploreOrdoGen={() => scrollToSection('ordogen')}
           onExploreLiterature={() => scrollToSection('literature')}
           lang={lang}
         />
+        <SummarySection lang={lang} />
         <OrdoMSection lang={lang} />
         <OrdoGenSection lang={lang} />
         <TimelineSection lang={lang} />

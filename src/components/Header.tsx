@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert, FileText } from 'lucide-react';
+import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert, FileText, Briefcase, Mail } from 'lucide-react';
 import { Language, translations } from '../i18n';
 import { SOCIAL, XIcon, OrdoMark } from './ui';
 
@@ -25,6 +25,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
 
   const navItems = [
     { id: 'overview', label: t.abstract, icon: Zap },
+    { id: 'summary', label: t.summary, icon: Briefcase },
     { id: 'ordo-m', label: t.ordoM, icon: MemoryStick },
     { id: 'ordogen', label: t.ordoGen, icon: Cpu },
     { id: 'timeline', label: t.timeline, icon: GitCommitVertical },
@@ -121,15 +122,25 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
               <span>{SOCIAL.x.handle}</span>
             </a>
 
-            {/* GitHub Profile Button */}
+            {/* Project email */}
             <a
-              href="https://github.com/8hrsk"
+              href={SOCIAL.email.url}
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+              title={SOCIAL.email.handle}
+            >
+              <Mail className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="hidden 2xl:inline">{SOCIAL.email.handle}</span>
+            </a>
+
+            {/* Project organisation on GitHub */}
+            <a
+              href={SOCIAL.org.url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
             >
               <Github className="w-3.5 h-3.5 text-cyan-400" />
-              <span>@8hrsk</span>
+              <span>{SOCIAL.org.handle}</span>
               <ExternalLink className="w-3 h-3 opacity-60" />
             </a>
           </div>
@@ -175,13 +186,20 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           })}
           <div className="pt-2 border-t border-[#1E2330]">
             <a
-              href="https://github.com/8hrsk"
+              href={SOCIAL.org.url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center space-x-2 w-full py-2.5 rounded-lg bg-[#0F1117] text-white text-xs font-mono border border-[#1E2330]"
             >
               <Github className="w-4 h-4 text-cyan-400" />
-              <span>GitHub / {SOCIAL.github.handle}</span>
+              <span>GitHub / {SOCIAL.org.handle}</span>
+            </a>
+            <a
+              href={SOCIAL.email.url}
+              className="mt-2 flex items-center justify-center space-x-2 w-full py-2.5 rounded-lg bg-[#0F1117] text-white text-xs font-mono border border-[#1E2330]"
+            >
+              <Mail className="w-4 h-4 text-cyan-400" />
+              <span className="break-all">{SOCIAL.email.handle}</span>
             </a>
             <a
               href={SOCIAL.x.url}

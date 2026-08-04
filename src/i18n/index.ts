@@ -3,6 +3,7 @@ import { nav } from './sections/nav';
 import { common } from './sections/common';
 import { meta } from './sections/meta';
 import { hero } from './sections/hero';
+import { summary } from './sections/summary';
 import { ordoM } from './sections/ordoM';
 import { ordoGen } from './sections/ordoGen';
 import { timeline } from './sections/timeline';
@@ -27,6 +28,7 @@ export const translations = {
     common: common.en,
     meta: meta.en,
     hero: hero.en,
+    summary: summary.en,
     ordoM: ordoM.en,
     ordoGen: ordoGen.en,
     timeline: timeline.en,
@@ -41,6 +43,7 @@ export const translations = {
     common: common.ru,
     meta: meta.ru,
     hero: hero.ru,
+    summary: summary.ru,
     ordoM: ordoM.ru,
     ordoGen: ordoGen.ru,
     timeline: timeline.ru,

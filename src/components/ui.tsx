@@ -12,8 +12,12 @@ export const LEGEND_STYLE = { fontSize: '10px', paddingTop: '8px' } as const;
 
 /** Project links, so the handle lives in one place. */
 export const SOCIAL = {
+  /** Personal profile of the lead researcher. */
   github: { url: 'https://github.com/8hrsk', handle: '@8hrsk' },
+  /** The project organisation, where releases and code live. */
+  org: { url: 'https://github.com/Ordo-Project', handle: 'Ordo-Project' },
   x: { url: 'https://x.com/ordoproject', handle: '@ordoproject' },
+  email: { url: 'mailto:founder@ordo-project.com', handle: 'founder@ordo-project.com' },
 } as const;
 
 /** The Ordo mark, lifted from the logo artwork: glyph only, no wordmark, transparent. */

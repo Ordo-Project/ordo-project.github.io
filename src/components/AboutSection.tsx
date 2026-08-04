@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, Github, Sparkles, ExternalLink, ShieldCheck, Cpu, Terminal } from 'lucide-react';
+import { User, Github, Sparkles, ExternalLink, ShieldCheck, Cpu, Terminal, Mail } from 'lucide-react';
 import { Language, translations } from '../i18n';
 import { SOCIAL, XIcon } from './ui';
 
@@ -113,6 +113,25 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                 <div className="p-4 rounded-xl bg-[#08090C] border border-[#1E2330]">
                   <div className="text-xs font-bold text-white mb-1 font-mono">{t.contactTitle}</div>
                   <p className="text-xs text-[#8A94A6] font-light leading-relaxed">{t.contactText}</p>
+                  <div className="mt-3 flex flex-wrap gap-2.5">
+                    <a
+                      href={SOCIAL.email.url}
+                      className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-cyan-950/60 hover:bg-cyan-900/80 text-cyan-300 border border-cyan-500/30 text-xs font-mono transition-all"
+                    >
+                      <Mail className="w-3.5 h-3.5 shrink-0" />
+                      <span className="break-all">{SOCIAL.email.handle}</span>
+                    </a>
+                    <a
+                      href={SOCIAL.org.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0B0D13] hover:bg-[#161922] text-[#8A94A6] hover:text-white border border-[#1E2330] text-xs font-mono transition-all"
+                    >
+                      <Github className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                      <span>{SOCIAL.org.handle}</span>
+                      <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>

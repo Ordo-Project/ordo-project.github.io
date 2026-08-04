@@ -2,6 +2,7 @@ import type { Bilingual } from '../types';
 
 const en = {
     abstract: 'Abstract',
+    summary: 'Summary',
     ordoM: 'Ordo-M',
     ordoGen: 'OrdoGen',
     timeline: 'Research Log',
@@ -16,6 +17,7 @@ export const nav: Bilingual<typeof en> = {
   en,
   ru: {
     abstract: 'Аннотация',
+    summary: 'Кратко',
     ordoM: 'Ordo-M',
     ordoGen: 'OrdoGen',
     timeline: 'Ход работы',

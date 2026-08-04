@@ -1,8 +1,9 @@
 import React from 'react';
-import { MemoryStick, Zap, ArrowRight, ShieldCheck, Layers, Activity, FileText, Lock, AlertTriangle } from 'lucide-react';
+import { MemoryStick, Zap, ArrowRight, ShieldCheck, Layers, Activity, FileText, Lock, AlertTriangle, Briefcase } from 'lucide-react';
 import { Language, translations } from '../i18n';
 
 interface HeroSectionProps {
+  onExploreSummary: () => void;
   onExploreOrdoM: () => void;
   onExploreOrdoGen: () => void;
   onExploreLiterature: () => void;
@@ -10,6 +11,7 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
+  onExploreSummary,
   onExploreOrdoM,
   onExploreOrdoGen,
   onExploreLiterature,
@@ -54,11 +56,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </a>
           </div>
 
-          <p className="mt-6 text-sm sm:text-base text-[#8A94A6] leading-relaxed font-light max-w-3xl mx-auto">
+          {/* Plain-language line first: a non-specialist should not have to parse
+              the technical subtitle to learn what the project is. */}
+          <p className="mt-6 text-base sm:text-lg text-[#E2E8F0] leading-relaxed font-light max-w-3xl mx-auto">
+            {t.plainLead}
+          </p>
+
+          <p className="mt-4 text-sm sm:text-base text-[#8A94A6] leading-relaxed font-light max-w-3xl mx-auto">
             {t.subtitle}
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button
+              onClick={onExploreSummary}
+              className="w-full sm:w-auto px-6 py-3 rounded-lg bg-amber-950/70 hover:bg-amber-900/80 text-amber-200 font-mono text-xs border border-amber-500/40 shadow-lg flex items-center justify-center space-x-2 transition-all"
+            >
+              <Briefcase className="w-4 h-4" />
+              <span>{t.btnSummary}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
             <button
               onClick={onExploreLiterature}
               className="w-full sm:w-auto px-6 py-3 rounded-lg bg-cyan-950/80 hover:bg-cyan-900/90 text-cyan-300 font-mono text-xs border border-cyan-500/40 shadow-lg flex items-center justify-center space-x-2 transition-all"

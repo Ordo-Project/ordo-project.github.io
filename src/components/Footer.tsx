@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, ShieldCheck } from 'lucide-react';
+import { Github, ShieldCheck, Mail } from 'lucide-react';
 import { Language, translations } from '../i18n';
 import { SOCIAL, XIcon, OrdoMark } from './ui';
 
@@ -28,13 +28,20 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
           {/* Social Links */}
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[#8A94A6] font-mono">
             <a
-              href="https://github.com/8hrsk"
+              href={SOCIAL.org.url}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-cyan-300 flex items-center space-x-1.5 transition-colors"
             >
               <Github className="w-4 h-4 text-cyan-400" />
-              <span>{SOCIAL.github.handle}</span>
+              <span>{SOCIAL.org.handle}</span>
+            </a>
+            <a
+              href={SOCIAL.email.url}
+              className="hover:text-cyan-300 flex items-center space-x-1.5 transition-colors"
+            >
+              <Mail className="w-4 h-4 text-cyan-400" />
+              <span className="break-all">{SOCIAL.email.handle}</span>
             </a>
             <a
               href={SOCIAL.x.url}
