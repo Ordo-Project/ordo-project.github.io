@@ -33,7 +33,7 @@
     <meta property="og:title" content="Ordo — rewritable memory for frozen LLMs, and the limit of long context" />
     <meta
       property="og:description"
-      content="An independent lab building a local assistant that takes new documentation as a diff instead of retraining. Measured, published, negative results included: 0.0% collateral damage on a point edit, the memory bar cleared on one domain of two, long-context collapse traced to three attention heads."
+      content="An independent lab building a local assistant that takes new documentation as a diff instead of retraining. Measured, published, negative results included: 0.0% collateral damage on a point edit, 96% of the text damage removed by a gate with no trainable parameters, long-context collapse traced to three attention heads."
     />
     <meta property="og:image" content="https://ordo-project.com/brand/og-cover.png" />
     <meta property="og:image:secure_url" content="https://ordo-project.com/brand/og-cover.png" />
@@ -89,8 +89,19 @@
             "sameAs": [
               "https://x.com/ordoproject",
               "https://github.com/Ordo-Project",
-              "https://github.com/8hrsk"
+              "https://github.com/8hrsk",
+              "https://www.alphaxiv.org/abs/2608.ordo-m-sparse-memory-frozen-model"
             ]
+          },
+          {
+            "@type": "ScholarlyArticle",
+            "@id": "https://ordo-project.com/#preprint-ordo-m",
+            "headline": "Ordo-M: sparse rewritable memory for a frozen model",
+            "author": { "@id": "https://ordo-project.com/#author" },
+            "publisher": { "@id": "https://ordo-project.com/#org" },
+            "isAccessibleForFree": true,
+            "url": "https://www.alphaxiv.org/abs/2608.ordo-m-sparse-memory-frozen-model",
+            "about": { "@id": "https://ordo-project.com/#ordo-m" }
           },
           {
             "@type": "Person",
@@ -189,7 +200,13 @@
           point edit causes 0.0% collateral damage, against 8.4% for an equal-capacity LoRA. On a real code domain the
           memory has passed the bar it set for itself against retrieval, 68.1% against a 67.8% threshold, but only after
           the corpus was rewritten into the form the questions ask about: fed raw documentation text it scores 54.1%,
-          and a deliberately wrong address scores the same as the right one.
+          and a deliberately wrong address scores the same as the right one. On a second, harder domain the best point
+          inside the damage budget reaches 70.4% ± 1.0 against a bar of 71.2% — a shortfall of 0.8 points that the
+          current construction has no remaining mechanism to close, because address capacity saturates near eight facts.
+          The damage side is solved separately: a gate with no trainable parameters, open where an answer is written and
+          closed on ordinary prose, removes 96% of the text damage for a cost of 2.0 points of knowledge that is not
+          statistically significant. The track is written up as a preprint at
+          <a href="https://www.alphaxiv.org/abs/2608.ordo-m-sparse-memory-frozen-model">alphaXiv</a>.
         </p>
         <h2>OrdoGen — the functional limit of long context</h2>
         <p>

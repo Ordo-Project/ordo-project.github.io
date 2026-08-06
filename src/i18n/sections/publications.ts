@@ -20,6 +20,11 @@ const en = {
     'Оригинал написан на английском. Ниже — перевод того же текста; при расхождении версий английская считается основной.',
   emptyHint: 'Pick a report on the left to read it here.',
   badgeChapter: 'Chapter',
+  preprintTag: 'PREPRINT',
+  preprintTitle: 'Ordo-M: sparse rewritable memory for a frozen model',
+  preprintText:
+    'The Ordo-M track as a single paper, hosted externally so it can be cited, discussed and disputed in the open. The chapters below remain the working record behind it.',
+  preprintCta: 'Read on alphaXiv',
 };
 
 /** RU is typed against EN, so a missing or renamed key fails the build. */
@@ -45,5 +50,10 @@ export const publications: Bilingual<typeof en> = {
       'Оригинал написан на английском. Ниже — перевод того же текста; при расхождении версий английская считается основной.',
     emptyHint: 'Выберите отчёт слева, чтобы прочитать его здесь.',
     badgeChapter: 'Глава',
+    preprintTag: 'ПРЕПРИНТ',
+    preprintTitle: 'Ordo-M: разреженная перезаписываемая память для замороженной модели',
+    preprintText:
+      'Трек Ordo-M одной статьёй, размещённой снаружи, чтобы её можно было цитировать, обсуждать и оспаривать открыто. Главы ниже остаются рабочей летописью за ней.',
+    preprintCta: 'Читать на alphaXiv',
   },
 };

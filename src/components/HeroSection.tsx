@@ -1,5 +1,5 @@
 import React from 'react';
-import { MemoryStick, Zap, ArrowRight, ShieldCheck, Layers, Activity, FileText, Lock, AlertTriangle, Briefcase } from 'lucide-react';
+import { MemoryStick, Zap, ArrowRight, ShieldCheck, Gauge, Activity, FileText, Lock, AlertTriangle, Briefcase } from 'lucide-react';
 import { Language, translations } from '../i18n';
 
 interface HeroSectionProps {
@@ -21,9 +21,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   const metrics = [
     { icon: ShieldCheck, tone: 'text-cyan-400', sub: 'text-cyan-400/80', val: t.metrics.damageVal, label: t.metrics.damageLabel, note: t.metrics.damageSub },
-    { icon: Layers, tone: 'text-violet-400', sub: 'text-violet-400/80', val: t.metrics.effVal, label: t.metrics.effLabel, note: t.metrics.effSub },
-    { icon: Activity, tone: 'text-emerald-400', sub: 'text-emerald-400/80', val: t.metrics.relayVal, label: t.metrics.relayLabel, note: t.metrics.relaySub },
-    { icon: AlertTriangle, tone: 'text-rose-400', sub: 'text-rose-400/80', val: t.metrics.penaltyVal, label: t.metrics.penaltyLabel, note: t.metrics.penaltySub },
+    { icon: Gauge, tone: 'text-emerald-400', sub: 'text-emerald-400/80', val: t.metrics.effVal, label: t.metrics.effLabel, note: t.metrics.effSub },
+    { icon: AlertTriangle, tone: 'text-amber-400', sub: 'text-amber-400/80', val: t.metrics.relayVal, label: t.metrics.relayLabel, note: t.metrics.relaySub },
+    { icon: Activity, tone: 'text-violet-400', sub: 'text-violet-400/80', val: t.metrics.penaltyVal, label: t.metrics.penaltyLabel, note: t.metrics.penaltySub },
   ];
 
   return (

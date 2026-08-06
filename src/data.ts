@@ -147,11 +147,11 @@ const twoDomainRaw = [
   {
     domain: L('Protocol SDK', 'SDK протокола'),
     base: 49.7,
-    memory: 64.7,
+    memory: 65.6,
     rag: 92.3,
     threshold: 71.2,
-    damage: 29.6,
-    gain: 15.0,
+    damage: 29.2,
+    gain: 15.9,
   },
 ];
 
@@ -170,8 +170,18 @@ const coverageTransferRaw = [
 export const coverageTransferData = (lang: Language) =>
   coverageTransferRaw.map((r) => ({ ...r, point: r.point[lang], miss: +(r.measured - r.predicted).toFixed(1) }));
 
-/** Same intercept — it is the base level — and a slope 1.48x flatter. */
-export const COVERAGE_SLOPES = { first: 0.539, second: 0.364, need: 60.3, available: 54.8, threshold: 71.2 };
+/** Both coefficients turned out to be properties of the domain: on three points the
+ *  intercept is 51.95 against a base of 49.7 (the earlier claim that it equals the base
+ *  was an artefact of having only two points), and the slope is 1.76x flatter. */
+export const COVERAGE_SLOPES = {
+  first: 0.539,
+  second: 0.307,
+  intercept: 51.95,
+  r2: 0.9961,
+  need: 62.7,
+  available: 54.8,
+  threshold: 71.2,
+};
 
 // ---------------------------------------------------------------------------
 // Ordo-M — the damage budget read by eye: 39 blind pairs, verdicts before the key
@@ -350,6 +360,90 @@ export const steeringControlData = (lang: Language) => [
 ];
 
 export const STEERING_CONTROL = { discordantFor: 1, discordantAgainst: 6, p: '0.125', delta: -4.2, goldInRoute: 119 };
+
+// ---------------------------------------------------------------------------
+// Ordo-M — the positional gate: the first mechanism that beats the volume axis
+// Damage is read as the rise in perplexity on prose that mentions the entity;
+// the phase budget is +36.8%. Knowledge is the same 507 questions throughout.
+// ---------------------------------------------------------------------------
+const gateRaw = [
+  { point: L('Quiet', 'Тихая'), gated: false, knowledge: 54.2, damage: -5.7 },
+  { point: L('Matched', 'Режимная'), gated: false, knowledge: 58.8, damage: 45.5 },
+  { point: L('Loud', 'Громкая'), gated: false, knowledge: 61.1, damage: 94.2 },
+  { point: L('+ gate', '+ вентиль'), gated: true, knowledge: 56.8, damage: 1.4 },
+  { point: L('Deep + dense', 'Глубже, плотнее'), gated: true, knowledge: 57.8, damage: 2.6 },
+  { point: L('+ epochs', '+ эпохи'), gated: true, knowledge: 60.6, damage: 25.3 },
+];
+
+export const gateData = (lang: Language) => gateRaw.map((r) => ({ ...r, point: r.point[lang] }));
+
+export const gateSeries = (lang: Language) => ({
+  knowledge: lang === 'ru' ? 'Знание' : 'Knowledge',
+  damage: lang === 'ru' ? 'Порча текста' : 'Text damage',
+});
+
+/** The budget, and what the gate costs when nothing else is changed. */
+export const GATE = { budget: 36.8, removal: 96, cost: 2.0, costP: '0.229', proseClosed: 84.2, answerOpen: 78.8 };
+
+// ---------------------------------------------------------------------------
+// Ordo-M — the larger model walks up to the bar and stops 0.8 points short
+// What transfers between model sizes is the share of the residual flow the
+// memory adds, not the volume setting that produces it.
+// ---------------------------------------------------------------------------
+export const flowCurveData = [
+  { share: 0.73, knowledge: 60.2, damage: -0.7 },
+  { share: 1.53, knowledge: 69.0, damage: 20.1 },
+  { share: 1.78, knowledge: 70.4, damage: 31.2 },
+  { share: 1.95, knowledge: 71.0, damage: 42.3 },
+];
+
+/** The 1.78 point is the mean of two seeds, 71.4 and 69.4 — the second-seed rule
+ *  written down before the run is what stopped the higher one being announced. */
+export const FLOW_POINT = { threshold: 71.2, best: 70.4, spread: 1.0, shortfall: 0.8, seedHigh: 71.4, seedLow: 69.4 };
+
+// ---------------------------------------------------------------------------
+// Ordo-M — four strata of the same question set: what content and form each buy
+// A judge on the same addresses replaced the lexical measure, which had been
+// counting a correct paraphrase as "not covered".
+// ---------------------------------------------------------------------------
+const strataRaw = [
+  { stratum: L('Form matched', 'Форма совпала'), large: 71.8, product: 80.8 },
+  { stratum: L('Form differs', 'Форма не совпала'), large: 65.5, product: 64.9 },
+  { stratum: L('Crowded out', 'Вытеснено ёмкостью'), large: 57.7, product: 52.1 },
+  { stratum: L('Not in corpus', 'Содержания нет'), large: 55.4, product: 50.8 },
+];
+
+export const strataData = (lang: Language) => strataRaw.map((r) => ({ ...r, stratum: r.stratum[lang] }));
+
+export const strataSeries = (lang: Language) => ({
+  large: lang === 'ru' ? 'Большая модель, 8 фактов на адрес' : 'Large model, 8 facts per address',
+  product: lang === 'ru' ? 'Продуктовая точка, 2 факта' : 'Product point, 2 facts',
+});
+
+/** Judged coverage against the lexical measure it replaced, and the ceiling that
+ *  full coverage would reach — still below the bar at every point measured. */
+export const COVERAGE_JUDGE = { judged: 74.4, lexical: 54.8, falsePositives: 0, ceiling: 69.0, needed: 76.6 };
+
+// ---------------------------------------------------------------------------
+// Ordo-M — address capacity saturates near eight facts
+// The corpus share was the axis an audit found; spending it bought nothing.
+// ---------------------------------------------------------------------------
+const capacityRaw = [
+  { cap: L('8 facts (baseline)', '8 фактов (опора)'), facts: 2694, corpus: 62.5, knowledge: 70.4, damage: 31.2, ce: 1.64 },
+  { cap: L('12 facts', '12 фактов'), facts: 3080, corpus: 71.5, knowledge: 69.6, damage: 36.5, ce: 1.9 },
+  { cap: L('No cap, all 4308', 'Без потолка, все 4308'), facts: 4308, corpus: 100, knowledge: 70.2, damage: 36.5, ce: 2.26 },
+];
+
+export const capacityData = (lang: Language) => capacityRaw.map((r) => ({ ...r, cap: r.cap[lang] }));
+
+export const capacitySeries = (lang: Language) => ({
+  corpus: lang === 'ru' ? 'Доля корпуса в обучении' : 'Corpus share trained',
+  knowledge: lang === 'ru' ? 'Знание' : 'Knowledge',
+  ce: lang === 'ru' ? 'Ошибка посадки (CE)' : 'Fitting error (CE)',
+});
+
+/** The oracle arm did not move, which is what rules addressing out as the cause. */
+export const CAPACITY = { oracleFrom: 72.4, oracleTo: 72.6, discarded: 37 };
 
 // ---------------------------------------------------------------------------
 // Papers / technical library
@@ -991,6 +1085,136 @@ export const papers: Paper[] = [
     limit: L(
       'This does not overturn the earlier 32K result, where plain reading scored 53% against 91% here — that is a difference of regime, the same lesson the second model taught. What it closes is the unconditional top-k bias as a component of any future policy.',
       'Это не опровергает прежний результат на 32K, где обычное чтение давало 53% против 91% здесь, — это разница режима, тот же урок, что дала вторая модель. Закрывается ровно безусловный top-k сдвиг как компонент будущей политики.'
+    ),
+  },
+  {
+    id: 'gate-in-the-run',
+    project: 'Ordo-M',
+    date: '2026-08-05',
+    tags: ['gate', 'damage', 'вентиль', 'порча'],
+    title: L(
+      'A gate with no trainable parameters removes 96% of the damage',
+      'Вентиль без обучаемых параметров убирает 96% порчи'
+    ),
+    summary: L(
+      'The first mechanism in the project that beats the volume axis: the memory is opened where an answer is being written and closed on ordinary prose.',
+      'Первый механизм проекта, обыгравший ось громкости: память открыта там, где пишется ответ, и закрыта на обычной прозе.'
+    ),
+    setup: L(
+      'Ten arms and four injection depths on one desktop card, all conditions written down before the runs. The gate has no trainable parameters — its keys are in closed form and fitting takes 22 seconds. Damage is the rise in perplexity on prose that mentions the entity, against a phase budget of +36.8%.',
+      'Десять плеч и четыре глубины врезки на одной настольной карте, все условия записаны до прогонов. У вентиля нет обучаемых параметров — ключи в закрытой форме, подбор занимает 22 секунды. Порча — рост перплексии на прозе с упоминанием сущности, бюджет фазы +36.8%.'
+    ),
+    result: L(
+      'Damage falls 96–97% where 30–50% was predicted: at the matched flow share, +45.5% becomes +1.35% for a cost of 2.0 points of knowledge that is not significant on any reading rule (p = 0.229). At equal, nearly zero damage the gate delivers 56.8% against 54.2% for simply turning the memory down — the volume axis had been closed since chapter 20, and this is the first thing to beat it. Separability carries into the run with margin: 84.2% of prose positions closed while 78.8% of answer positions stay open. The freed budget can be spent: 24 epochs add 3.4 points inside the budget. Two product points now differ by one field: cheap at 57.8% for +2.56% damage, and knowing at 60.6% for +25.33%.',
+      'Порча падает на 96–97% там, где предсказывалось 30–50%: на согласованной доле потока +45.5% превращается в +1.35% ценой 2.0 пункта знания, не значимых ни на одном правиле чтения (p = 0.229). При одинаковой, почти нулевой порче вентиль даёт 56.8% против 54.2% у простого снижения громкости — ось громкости была закрыта ещё главой 20, и это первое, что её обыграло. Разделимость переносится в прогон с запасом: закрыто 84.2% позиций прозы при 78.8% открытых позиций ответа. Освобождённый бюджет есть чем занять: 24 эпохи дают +3.4 пункта внутри бюджета. Продуктовых точек теперь две, различаются одним полем: дешёвая 57.8% при порче +2.56% и знающая 60.6% при +25.33%.'
+    ),
+    limit: L(
+      'Five gated points sit at 59–62% and are pairwise indistinguishable — on this model size that is a wall, and the next constraint is no longer damage. Four predictions made along the way were wrong and are published with their corrections; the sharpest lesson is that a quantity which grows non-linearly with a perturbation cannot be calibrated where it is near zero.',
+      'Пять точек с вентилем стоят на 59–62% и попарно не различимы — на этом размере модели это стена, и следующее ограничение уже не порча. Четыре предсказания по дороге оказались неверны и опубликованы с поправками; самый резкий урок: величину, растущую нелинейно по возмущению, нельзя калибровать там, где она близка к нулю.'
+    ),
+  },
+  {
+    id: 'knn-objective',
+    project: 'Ordo-M',
+    date: '2026-08-05',
+    tags: ['objective', 'negative', 'цель', 'отрицательный'],
+    title: L(
+      'Borrowing a training objective: a negative result predicted before training',
+      'Заимствованная цель обучения: отрицательный результат, предсказанный до обучения'
+    ),
+    summary: L(
+      'An external paper reports +10.2 points for training against a retriever distribution instead of the answer. Here the same substitution took knowledge away.',
+      'Внешняя работа сообщает +10.2 пункта за обучение против распределения ретривера вместо ответа. Здесь та же замена знание отняла.'
+    ),
+    setup: L(
+      'Only the objective was borrowed, not the architecture: divergence to a nearest-neighbour retriever distribution instead of cross-entropy on the answer, everything else held fixed. Before training, the retriever was measured against ground truth at exactly the positions where the loss would sit.',
+      'Заимствовалась только цель, не архитектура: расхождение с распределением ближайших соседей вместо перекрёстной энтропии по ответу, всё остальное неизменно. До обучения ретривер был замерен против истины ровно в тех позициях, где встанет потеря.'
+    ),
+    result: L(
+      'Knowledge fell 57.8% → 53.5%, paired p = 0.0009, and the loss sits entirely on the side of the correct address — on the deliberately wrong address there is no difference at all. The cause had already been measured: the retriever\'s top choice is right 24.3% of the time against 35.5% for the frozen base, so the objective is distillation of noise. The rule generalises past this case: before training against a target produced by an external procedure, measure that procedure against ground truth at the positions where the loss will sit.',
+      'Знание упало 57.8% → 53.5%, парный p = 0.0009, и потеря сидит целиком на стороне верного адреса — на заведомо неверном адресе разницы нет вовсе. Причина была замерена заранее: argmax ретривера верен в 24.3% против 35.5% у замороженной базы, то есть цель — дистилляция шума. Правило шире случая: прежде чем обучать на цели из внешней процедуры, замерьте эту процедуру против истины в тех позициях, где будет стоять потеря.'
+    ),
+    limit: L(
+      'This does not refute the external result — their setup differs in scale and in what the datastore contains. It refutes the transfer of the objective to this construction, and it says why: the datastore here was assembled from record bodies and contains no question-shaped context at all.',
+      'Это не опровергает внешний результат — их постановка отличается масштабом и содержимым датастора. Опровергается перенос цели в эту конструкцию, и сказано почему: датастор здесь собран из тел записей и не содержит вопросного контекста вовсе.'
+    ),
+  },
+  {
+    id: 'form-not-corpus',
+    project: 'Ordo-M',
+    date: '2026-08-05',
+    tags: ['coverage', 'capacity', 'покрытие', 'ёмкость'],
+    title: L(
+      'The wall is address capacity, not the content of the corpus',
+      'Стена — ёмкость адреса, а не содержание корпуса'
+    ),
+    summary: L(
+      'The measure that had been used to size the corpus was counting a correct paraphrase as "not covered", and correcting it moved the diagnosis somewhere else entirely.',
+      'Мера, которой мерили корпус, считала верный пересказ «непокрытым», и её исправление перенесло диагноз совсем в другое место.'
+    ),
+    setup: L(
+      'Coverage re-measured by a judge on the same addresses, with 128 deliberately swapped addresses as the false-positive floor. The question set was then split into four strata instead of two: form matched, form differs, content crowded out by capacity, content absent.',
+      'Покрытие переизмерено судьёй на тех же адресах, при 128 подменах адреса как поле ложных срабатываний. Затем набор разрезан на четыре страты вместо двух: форма совпала, форма не совпала, содержание вытеснено ёмкостью, содержания нет.'
+    ),
+    result: L(
+      'Judged coverage is 74.4% against 54.8% lexical, both halves of the set reproducing the gap independently, false positives 0.0% on 128 swaps. Three numbers follow. Content is necessary: where the fact is nowhere in the corpus, the gain is indistinguishable from zero at all four operating points. It is not sufficient: at two facts per address, 190 questions of 507 are crowded out and gain 0.5 points — the answer was written and the memory never saw it. And the bar is not reachable by coverage at any point: the ceiling under full coverage is 59.9–69.0%, all below 71.2%. The binding constraint is the capacity of one address.',
+      'Судейское покрытие 74.4% против 54.8% лексического, обе половины набора воспроизвели разрыв независимо, ложных срабатываний 0.0% на 128 подменах. Отсюда три числа. Содержание необходимо: где факта нет во всём корпусе, прибавка неотличима от нуля во всех четырёх точках. Его недостаточно: при двух фактах на адрес вытеснено 190 вопросов из 507, и на них +0.5 пункта — ответ написан, а память его не видела. И порог не берётся покрытием ни в одной точке: потолок при полном покрытии 59.9–69.0%, всё ниже 71.2%. Связывающее ограничение — ёмкость одного адреса.'
+    ),
+    limit: L(
+      'The lexical coverage measure has a defect of about 6 points, and that defect touches every coverage number the project has published. Storing each fact in several forms was generated as a lever and closed by arithmetic before any run: paraphrases are not independent, and the bar would need about five forms — a fivefold training corpus at the same number of facts.',
+      'У лексической меры покрытия дефект около 6 пунктов, и он касается всех чисел покрытия, опубликованных проектом. Рычаг «хранить факт в нескольких формах» порождён и закрыт арифметикой до прогона: пересказы не независимы, а порогу нужно около пяти форм — пятикратный обучающий корпус при том же числе фактов.'
+    ),
+  },
+  {
+    id: 'eight-b-boundary',
+    project: 'Ordo-M',
+    date: '2026-08-06',
+    tags: ['transfer', 'threshold', 'перенос', 'порог'],
+    title: L(
+      'The larger model stops 0.8 points short of the bar',
+      'Большая модель останавливается в 0.8 пункта от планки'
+    ),
+    summary: L(
+      'The best in-budget point of the project, a rule written before the run that stopped it being announced as a pass, and the exhaustion of the mechanisms that could have closed the gap.',
+      'Лучшая точка проекта внутри бюджета, правило, записанное до прогона и не давшее объявить порог взятым, и исчерпание механизмов, которые могли бы закрыть недостачу.'
+    ),
+    setup: L(
+      'The gated construction carried from the small model to the large one on the same protocol-SDK domain and the same 507 questions. What is held constant between sizes is the share of the residual flow the memory adds, not the volume setting that produces it — that was measured, not assumed.',
+      'Конструкция с вентилем перенесена с малой модели на большую на том же домене SDK протокола и тех же 507 вопросах. Между размерами держится постоянной доля остаточного потока, которую добавляет память, а не громкость, её производящая, — это измерено, а не предположено.'
+    ),
+    result: L(
+      'Knowledge rises with flow share and flattens after about 1.8: 60.2 → 69.0 → 71.4 → 71.0%. The best point inside the damage budget is 70.4% ± 1.0 against a bar of 71.2% — a shortfall of 0.8 points, and the best single seed, 71.4%, would have cleared it. The rule "do not announce without a second seed", written down before the run, is what caught the top of the spread; the second seed gave 69.4%. Two further mechanisms were then measured and closed: splitting an entity across slots gave the best fitting error in the project and read 6.1 points worse, and the addressing dividend has a hard ceiling of +1.87 points of which only about +1.0 is reachable.',
+      'Знание растёт по доле потока и выполаживается после ~1.8: 60.2 → 69.0 → 71.4 → 71.0%. Лучшая точка внутри бюджета порчи — 70.4% ± 1.0 при планке 71.2%, недобор 0.8 пункта, причём лучшее одиночное зерно, 71.4%, планку бы взяло. Правило «не объявлять без второго зерна», записанное до прогона, поймало верх разброса: второе зерно дало 69.4%. Ещё два механизма затем замерены и закрыты: дробление сущности на слоты дало лучшую за проект посадку и прочиталось на 6.1 пункта хуже, а у дивиденда адресации жёсткий потолок +1.87 пункта, из которых достижимо около +1.0.'
+    ),
+    limit: L(
+      'Inside the current construction there are no mechanisms left for those 0.8 points, and the shortfall stands unclosed. The spread of ±1.0 is a spread of initialisation rather than of data order — an audit found that the seed was not being set at all, so runs before it were not reproducible.',
+      'Внутри нынешней конструкции механизмов на эти 0.8 пункта не осталось, и недостача остаётся незакрытой. Полоса ±1.0 — это разброс инициализации, а не порядка данных: аудит нашёл, что зерно не ставилось вовсе, поэтому прогоны до него не воспроизводились.'
+    ),
+  },
+  {
+    id: 'audit-and-capacity',
+    project: 'Ordo-M',
+    date: '2026-08-06',
+    tags: ['audit', 'capacity', 'аудит', 'ёмкость'],
+    title: L(
+      'An audit of our own bench, and the axis it found being spent to nothing',
+      'Аудит собственного стенда и ось, которую он нашёл, потраченная впустую'
+    ),
+    summary: L(
+      'Five silent defects in the measurement bench, published with the corrections they force — and the one live axis the audit surfaced, tested and rejected by its own criterion.',
+      'Пять тихих дефектов стенда, опубликованные вместе с поправками, которых они требуют, — и одна живая ось, найденная аудитом, проверенная и отвергнутая собственным критерием.'
+    ),
+    setup: L(
+      'A read of the harness against the claims it had produced, then two arms on rented hardware to test the surviving hypothesis: the operating point was training on 62.5% of the corpus, because facts beyond the eighth on an address were being dropped.',
+      'Разбор стенда против утверждений, которые он произвёл, затем два плеча на арендованном железе для проверки уцелевшей гипотезы: рабочая точка обучалась на 62.5% корпуса, потому что факты после восьмого на адрес отбрасывались.'
+    ),
+    result: L(
+      'The defects: the seed was never set, so a frozen random matrix was redrawn on every launch and two "different" seeds shared 23 of 24 batch orders; a depth setting of 1.0 landed on the wrong block; the gate separability probe built its prose from addresses rather than names; and the flow share was overstated by 7.4%, which corrects the numbers of three chapters. Then the capacity axis: raising the cap to 12 gives 69.6% and removing it entirely gives 70.2%, against 70.4% ± 1.0 for the baseline — knowledge did not move while damage rose to the edge of the budget. Three numbers give the diagnosis: the oracle arm did not move, so addressing is not the cause; fitting error grows monotonically, the signature of crowding; the flow share is unchanged, so the damage came from the number of steps. Address capacity saturates near eight facts, and the discarded 37% of the corpus was worth nothing.',
+      'Дефекты: зерно не ставилось нигде, поэтому замороженная случайная матрица розыгрывалась заново каждым запуском, а два «разных» зерна делили 23 порядка батчей из 24; настройка глубины 1.0 попадала не в тот блок; зонд разделимости вентиля строил прозу из адресов, а не из имён; доля потока была завышена на 7.4%, и это правит числа трёх глав. Затем ось ёмкости: потолок 12 даёт 69.6%, снятие потолка — 70.2% против 70.4% ± 1.0 у опоры; знание не сдвинулось, а порча выросла до края бюджета. Диагноз дают три числа: оракул не двинулся — значит дело не в адресации; ошибка посадки растёт монотонно — подпись вытеснения; доля потока та же — порча пришла от числа шагов. Ёмкость адреса насыщается около восьми фактов, и выброшенные 37% корпуса не стоили ничего.',
+    ),
+    limit: L(
+      'The audit\'s own hypothesis was rejected by the criterion the audit registered, which is the point of registering one. The spread of ±1.0 points is real but it measures initialisation, not data order, so the earlier reading of that band was wrong even though its width was right.',
+      'Гипотеза самого аудита отвергнута критерием, который аудит же и зарегистрировал, — ради этого критерий и пишется. Полоса ±1.0 пункта реальна, но мерит инициализацию, а не порядок данных, поэтому прежнее прочтение этой полосы было неверным при верной ширине.'
     ),
   },
 ];

@@ -1,9 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { FileText, Download, ChevronDown, ChevronUp, Clock, User, CalendarDays, Info } from 'lucide-react';
+import {
+  FileText,
+  Download,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  User,
+  CalendarDays,
+  Info,
+  BookOpen,
+  ExternalLink,
+} from 'lucide-react';
 import { translations, type Language } from '../i18n';
 import { publications } from '../content/publications';
 import { PaperReader, paperSections } from './PaperReader';
-import { SectionHeader } from './ui';
+import { SectionHeader, SOCIAL } from './ui';
 
 interface PublicationsSectionProps {
   lang: Language;
@@ -29,6 +40,32 @@ export const PublicationsSection: React.FC<PublicationsSectionProps> = ({ lang }
         />
 
         <p className="text-sm text-[#8A94A6] max-w-3xl mb-8 font-light leading-relaxed">{t.subtitle}</p>
+
+        {/* The track as one citable paper, hosted where it can be argued with */}
+        <a
+          href={SOCIAL.preprint.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group block mb-8 glass-panel p-5 sm:p-6 rounded-2xl border border-emerald-500/30 hover:border-emerald-400/60 bg-[#08090C] transition-all"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between min-w-0">
+            <div className="min-w-0">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded border bg-emerald-950/70 text-emerald-300 border-emerald-900/70">
+                {t.preprintTag}
+              </span>
+              <h3 className="mt-2.5 text-base sm:text-lg font-bold text-white leading-snug group-hover:text-emerald-200 transition-colors">
+                {t.preprintTitle}
+              </h3>
+              <p className="mt-1.5 text-xs text-[#8A94A6] font-light leading-relaxed max-w-3xl">{t.preprintText}</p>
+              <p className="mt-2 text-[11px] font-mono text-emerald-400/80 break-all">{SOCIAL.preprint.handle}</p>
+            </div>
+            <span className="shrink-0 self-start sm:self-center flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 text-xs font-mono">
+              <BookOpen className="w-4 h-4" />
+              {t.preprintCta}
+              <ExternalLink className="w-3 h-3 opacity-70" />
+            </span>
+          </div>
+        </a>
 
         <div className="space-y-5">
           {publications.map((paper) => {

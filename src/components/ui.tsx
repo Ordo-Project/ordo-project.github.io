@@ -18,6 +18,11 @@ export const SOCIAL = {
   org: { url: 'https://github.com/Ordo-Project', handle: 'Ordo-Project' },
   x: { url: 'https://x.com/ordoproject', handle: '@ordoproject' },
   email: { url: 'mailto:founder@ordo-project.com', handle: 'founder@ordo-project.com' },
+  /** The Ordo-M track as a citable preprint. */
+  preprint: {
+    url: 'https://www.alphaxiv.org/abs/2608.ordo-m-sparse-memory-frozen-model',
+    handle: 'alphaxiv.org/abs/2608.ordo-m-sparse-memory-frozen-model',
+  },
 } as const;
 
 /** The Ordo mark, lifted from the logo artwork: glyph only, no wordmark, transparent. */

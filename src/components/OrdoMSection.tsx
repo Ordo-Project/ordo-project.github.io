@@ -36,6 +36,15 @@ import {
   blindReadData,
   blindReadSeries,
   COVERAGE_SLOPES,
+  gateData,
+  gateSeries,
+  GATE,
+  flowCurveData,
+  FLOW_POINT,
+  strataData,
+  strataSeries,
+  capacityData,
+  capacitySeries,
 } from '../data';
 import { SectionHeader, FigureCard, AXIS, TOOLTIP_STYLE, LEGEND_STYLE } from './ui';
 
@@ -60,6 +69,13 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
   const transfer = coverageTransferData(lang);
   const blind = blindReadData();
   const blindLabels = blindReadSeries(lang);
+  const gate = gateData(lang);
+  const gateLabels = gateSeries(lang);
+  const flow = flowCurveData;
+  const strata = strataData(lang);
+  const strataLabels = strataSeries(lang);
+  const capacity = capacityData(lang);
+  const capacityLabels = capacitySeries(lang);
 
   const armColor = (kind: string) =>
     kind === 'base'
@@ -611,6 +627,183 @@ export const OrdoMSection: React.FC<OrdoMSectionProps> = ({ lang }) => {
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+          {/* The gate: knowledge against damage, gated points marked */}
+          <FigureCard
+            title={t.fig13Title}
+            sub={t.fig13Sub}
+            badge={t.fig13Badge}
+            badgeTone="emerald"
+            analysisLabel={c.analysis}
+            analysis={t.fig13Analysis}
+            icon={<Gauge className="w-4 h-4 text-emerald-400 shrink-0" />}
+            chartMinWidth="560px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={gate} margin={{ top: 20, right: 8, left: -14, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="point" stroke="#8A94A6" tick={{ ...AXIS, fontSize: 9 }} interval={0} />
+                <YAxis yAxisId="k" stroke="#8A94A6" tick={AXIS} domain={[45, 65]} unit="%" />
+                <YAxis yAxisId="d" orientation="right" stroke="#F43F5E" tick={AXIS} domain={[-20, 100]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <ReferenceLine
+                  yAxisId="d"
+                  y={GATE.budget}
+                  stroke="#F59E0B"
+                  strokeDasharray="4 4"
+                  label={{ value: `+${GATE.budget}%`, position: 'insideTopRight', fill: '#F59E0B', fontSize: 10 }}
+                />
+                {/* fill is the legend swatch; the per-point Cell marks which arms are gated */}
+                <Bar
+                  yAxisId="k"
+                  isAnimationActive={false}
+                  dataKey="knowledge"
+                  name={gateLabels.knowledge}
+                  fill="#10B981"
+                  radius={[4, 4, 0, 0]}
+                >
+                  {gate.map((row, i) => (
+                    <Cell key={i} fill={row.gated ? '#10B981' : '#334155'} />
+                  ))}
+                  <LabelList dataKey="knowledge" position="top" fill="#94A3B8" fontSize={10} />
+                </Bar>
+                <Line
+                  yAxisId="d"
+                  isAnimationActive={false}
+                  type="monotone"
+                  dataKey="damage"
+                  name={gateLabels.damage}
+                  stroke="#F43F5E"
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: '#F43F5E' }}
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          {/* Flow share against knowledge on the larger model */}
+          <FigureCard
+            title={t.fig14Title}
+            sub={t.fig14Sub}
+            badge={t.fig14Badge}
+            badgeTone="amber"
+            analysisLabel={c.analysis}
+            analysis={t.fig14Analysis}
+            icon={<Target className="w-4 h-4 text-amber-400 shrink-0" />}
+            chartMinWidth="420px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={flow} margin={{ top: 20, right: 8, left: -14, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis
+                  dataKey="share"
+                  type="number"
+                  domain={[0.6, 2.05]}
+                  ticks={flow.map((p) => p.share)}
+                  stroke="#8A94A6"
+                  tick={AXIS}
+                  tickFormatter={(v: number) => v.toFixed(2)}
+                />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[55, 75]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ stroke: '#2E364A' }} />
+                <ReferenceLine
+                  y={FLOW_POINT.threshold}
+                  stroke="#F59E0B"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: `${FLOW_POINT.threshold}%`,
+                    position: 'insideTopLeft',
+                    fill: '#F59E0B',
+                    fontSize: 10,
+                  }}
+                />
+                <Line
+                  isAnimationActive={false}
+                  type="monotone"
+                  dataKey="knowledge"
+                  name={gateLabels.knowledge}
+                  stroke="#22D3EE"
+                  strokeWidth={2}
+                  dot={{ r: 5, fill: '#22D3EE' }}
+                >
+                  <LabelList
+                    dataKey="knowledge"
+                    position="top"
+                    fill="#67E8F9"
+                    fontSize={10}
+                    formatter={(v: number) => v.toFixed(1)}
+                  />
+                </Line>
+              </ComposedChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          {/* Four strata of the same question set */}
+          <FigureCard
+            title={t.fig15Title}
+            sub={t.fig15Sub}
+            badge={t.fig15Badge}
+            badgeTone="cyan"
+            analysisLabel={c.analysis}
+            analysis={t.fig15Analysis}
+            icon={<Layers className="w-4 h-4 text-cyan-400 shrink-0" />}
+            chartMinWidth="480px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={strata} margin={{ top: 20, right: 12, left: -14, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="stratum" stroke="#8A94A6" tick={{ ...AXIS, fontSize: 9 }} interval={0} />
+                <YAxis stroke="#8A94A6" tick={AXIS} domain={[40, 90]} unit="%" />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Bar isAnimationActive={false} dataKey="product" name={strataLabels.product} fill="#22D3EE" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="product" position="top" fill="#67E8F9" fontSize={10} />
+                </Bar>
+                <Bar isAnimationActive={false} dataKey="large" name={strataLabels.large} fill="#8B5CF6" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="large" position="top" fill="#A78BFA" fontSize={10} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </FigureCard>
+
+          {/* Address capacity saturation */}
+          <FigureCard
+            title={t.fig16Title}
+            sub={t.fig16Sub}
+            badge={t.fig16Badge}
+            badgeTone="rose"
+            analysisLabel={c.analysis}
+            analysis={t.fig16Analysis}
+            icon={<TrendingUp className="w-4 h-4 text-rose-400 shrink-0" />}
+            chartMinWidth="480px"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={capacity} margin={{ top: 20, right: 8, left: -14, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E2330" />
+                <XAxis dataKey="cap" stroke="#8A94A6" tick={{ ...AXIS, fontSize: 9 }} interval={0} />
+                <YAxis yAxisId="p" stroke="#8A94A6" tick={AXIS} domain={[0, 100]} unit="%" />
+                <YAxis yAxisId="ce" orientation="right" stroke="#F59E0B" tick={AXIS} domain={[1, 2.6]} />
+                <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+                <Legend wrapperStyle={LEGEND_STYLE} />
+                <Bar yAxisId="p" isAnimationActive={false} dataKey="corpus" name={capacityLabels.corpus} fill="#334155" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="corpus" position="top" fill="#94A3B8" fontSize={10} />
+                </Bar>
+                <Bar yAxisId="p" isAnimationActive={false} dataKey="knowledge" name={capacityLabels.knowledge} fill="#10B981" radius={[4, 4, 0, 0]}>
+                  <LabelList dataKey="knowledge" position="top" fill="#6EE7B7" fontSize={10} />
+                </Bar>
+                <Line
+                  yAxisId="ce"
+                  isAnimationActive={false}
+                  type="monotone"
+                  dataKey="ce"
+                  name={capacityLabels.ce}
+                  stroke="#F59E0B"
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: '#F59E0B' }}
+                />
+              </ComposedChart>
             </ResponsiveContainer>
           </FigureCard>
         </div>
