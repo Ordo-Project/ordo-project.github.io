@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, ExternalLink, Globe, GitCommitVertical, ShieldAlert, FileText, Briefcase, Mail } from 'lucide-react';
+import { Cpu, MemoryStick, Zap, BookOpen, User, Github, Menu, X, Globe, GitCommitVertical, ShieldAlert, FileText, Briefcase, Mail } from 'lucide-react';
 import { Language, translations } from '../i18n';
 import { SOCIAL, XIcon, OrdoMark } from './ui';
 
@@ -57,21 +57,18 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           {/* Logo & Lab Tag */}
           <div
             onClick={() => handleNavClick('overview')}
-            className="flex items-center space-x-3 cursor-pointer min-w-0 group"
+            className="flex items-center space-x-3 cursor-pointer shrink-0 group"
           >
             <div className="w-9 h-9 shrink-0 flex items-center justify-center">
               <OrdoMark className="w-9 h-9 opacity-95 group-hover:opacity-100 group-hover:scale-105 transition-all" />
             </div>
-            <div className="flex flex-col min-w-0">
+            <div className="flex flex-col">
               <div className="flex items-center space-x-2">
                 <span className="font-extrabold text-sm sm:text-base tracking-tight text-white font-mono group-hover:text-cyan-300 transition-colors whitespace-nowrap">
                   ORDO RESEARCH
                 </span>
-                <span className="hidden 2xl:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-cyan-400 border border-cyan-900/60">
-                  LAB PREPRINT
-                </span>
               </div>
-              <span className="text-[10px] text-[#8A94A6] tracking-wide font-mono truncate">
+              <span className="text-[10px] text-[#8A94A6] tracking-wide font-mono whitespace-nowrap">
                 ordo-project.com
               </span>
             </div>
@@ -80,19 +77,17 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
           {/* Desktop Navigation Menu */}
           <nav className="hidden xl:flex items-center space-x-1 glass-panel px-2.5 py-1 rounded-xl border border-[#1E2330]">
             {navItems.map((item) => {
-              const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center gap-1.5 px-2.5 2xl:px-3 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-all duration-200 ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition-all duration-200 ${
                     isActive
                       ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow-sm'
                       : 'text-[#8A94A6] hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 hidden 2xl:block ${isActive ? 'text-cyan-400' : ''}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -116,10 +111,13 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
               href={SOCIAL.x.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+              title={SOCIAL.x.handle}
             >
               <XIcon className="w-3 h-3 text-cyan-400" />
-              <span>{SOCIAL.x.handle}</span>
+              {/* The header row is capped at max-w-7xl, so a wider viewport buys no room:
+                  the action buttons stay icon-only and carry their handle for screen readers. */}
+              <span className="sr-only">{SOCIAL.x.handle}</span>
             </a>
 
             {/* Project email */}
@@ -129,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
               title={SOCIAL.email.handle}
             >
               <Mail className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden 2xl:inline">{SOCIAL.email.handle}</span>
+              <span className="sr-only">{SOCIAL.email.handle}</span>
             </a>
 
             {/* Project organisation on GitHub */}
@@ -137,11 +135,11 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, lang, s
               href={SOCIAL.org.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-[#0F1117] hover:bg-[#161922] text-[#8A94A6] hover:text-white text-xs font-mono border border-[#1E2330] hover:border-cyan-500/40 transition-all"
+              title={SOCIAL.org.handle}
             >
               <Github className="w-3.5 h-3.5 text-cyan-400" />
-              <span>{SOCIAL.org.handle}</span>
-              <ExternalLink className="w-3 h-3 opacity-60" />
+              <span className="sr-only">{SOCIAL.org.handle}</span>
             </a>
           </div>
 
